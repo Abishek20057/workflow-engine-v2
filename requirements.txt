@@ -1,3 +1,48 @@
-fastapi
-uvicorn
-pydantic
+# Workflow Automation Engine
+
+A workflow automation system built using FastAPI that allows users to create workflows, define steps and rules, execute processes, and track execution logs through a simple web interface.
+
+## Features
+
+- Create workflows
+- Add workflow steps
+- Define rule conditions
+- Execute workflows dynamically
+- Visual workflow diagram
+- Execution logs
+
+## Tech Stack
+
+Backend: FastAPI (Python)  
+Frontend: HTML, CSS, JavaScript  
+Deployment: Render  
+Version Control: GitHub
+
+## How to Run Locally
+
+Install dependencies
+
+pip install -r requirements.txt
+
+Run server
+
+uvicorn main:app --reload
+
+Open browser
+
+http://127.0.0.1:8000
+
+## Live Deployment
+
+(Add your Render link here)
+
+## Project Structure
+
+workflow-engine-v2/
+│
+├── main.py
+├── models.py
+├── workflow_engine.py
+├── index.html
+├── style.css
+├── requirements.txt
