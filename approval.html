@@ -1,48 +1,101 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html><head><title>Workflow Result</title><style>
 
-<head>
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:Arial;
+background:linear-gradient(135deg,#141e30,#243b55);
+color:white;
+}
 
-<title>Workflow Result</title>
+.box{
+background:#1f4068;
+padding:60px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,255,255,0.4);
+animation:pop 0.8s ease;
+width:400px;
+}
 
-<link rel="stylesheet" href="style.css">
+h1{
+font-size:36px;
+margin-bottom:20px;
+}
 
-</head>
+.status{
+font-size:28px;
+margin-top:20px;
+font-weight:bold;
+}
 
-<body class="center">
+.approved{
+color:#2ecc71;
+animation:glow 1.5s infinite alternate;
+}
 
-<div class="result-box">
+.pending{
+color:#f1c40f;
+animation:glow 1.5s infinite alternate;
+}
 
-<h1>Workflow Status</h1>
+button{
+margin-top:30px;
+padding:12px 25px;
+border:none;
+border-radius:8px;
+background:#00c6ff;
+cursor:pointer;
+font-weight:bold;
+font-size:16px;
+transition:0.3s;
+}
 
-<div id="result"></div>
+button:hover{
+background:#00a3cc;
+transform:scale(1.05);
+}
 
-<button onclick="home()">Back</button>
+@keyframes pop{
+0%{transform:scale(0)}
+100%{transform:scale(1)}
+}
 
-</div>
+@keyframes glow{
+0%{text-shadow:0 0 5px white}
+100%{text-shadow:0 0 20px white}
+}
 
-<script>
+</style></head><body><div class="box"><h1>Workflow Status</h1><div id="result" class="status"></div><button onclick="home()">Back to Dashboard</button>
+
+</div><script>
 
 function home(){
 window.location="/"
 }
 
-const params=new URLSearchParams(window.location.search)
+const params = new URLSearchParams(window.location.search)
 
-let status=params.get("status")
+let status = params.get("status")
 
-let result=document.getElementById("result")
+let result = document.getElementById("result")
 
 if(status=="approved"){
-result.innerHTML="✅ Expense Approved"
+
+result.innerHTML="✅ Expense Approved 🎉"
+result.classList.add("approved")
+
 }
 
 else{
+
 result.innerHTML="⏳ Manager Approval Required"
+result.classList.add("pending")
+
 }
 
-</script>
-
-</body>
-
+</script></body>
 </html>

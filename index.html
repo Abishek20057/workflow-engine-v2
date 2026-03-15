@@ -26,10 +26,18 @@ background:#1f4068;
 padding:20px;
 margin-bottom:25px;
 border-radius:10px;
+transition:0.3s;
+}
+
+.section:hover{
+transform:scale(1.02);
+box-shadow:0 0 20px rgba(0,198,255,0.4);
 }
 
 h1{
 text-align:center;
+margin-bottom:30px;
+animation:fadeIn 1s ease;
 }
 
 input,select{
@@ -47,10 +55,12 @@ border:none;
 border-radius:5px;
 cursor:pointer;
 font-weight:bold;
+transition:0.3s;
 }
 
 button:hover{
 background:#00a3cc;
+transform:scale(1.05);
 }
 
 label{
@@ -62,6 +72,18 @@ background:#0f3460;
 padding:15px;
 border-radius:8px;
 margin-bottom:20px;
+animation:fadeIn 1s ease;
+}
+
+.success{
+margin-top:10px;
+color:#2ecc71;
+font-weight:bold;
+}
+
+@keyframes fadeIn{
+0%{opacity:0;transform:translateY(20px)}
+100%{opacity:1;transform:translateY(0)}
 }
 
 </style>
@@ -98,6 +120,8 @@ margin-bottom:20px;
 
 <button onclick="createWorkflow()">Create Workflow</button>
 
+<div id="wf_msg" class="success"></div>
+
 </div>
 
 
@@ -130,6 +154,8 @@ margin-bottom:20px;
 
 <button onclick="addStep()">Add Step</button>
 
+<div id="step_msg" class="success"></div>
+
 </div>
 
 
@@ -155,6 +181,8 @@ margin-bottom:20px;
 <input id="rule_priority" placeholder="Example: 1">
 
 <button onclick="addRule()">Add Rule</button>
+
+<div id="rule_msg" class="success"></div>
 
 </div>
 
@@ -216,7 +244,7 @@ body:JSON.stringify({name:name})
 
 })
 
-alert("Workflow Created")
+document.getElementById("wf_msg").innerText="✔ Workflow Created Successfully"
 
 loadWorkflows()
 
@@ -246,7 +274,7 @@ order:Number(order)
 
 })
 
-alert("Step Added")
+document.getElementById("step_msg").innerText="✔ Step Added Successfully"
 
 }
 
@@ -274,7 +302,7 @@ priority:Number(priority)
 
 })
 
-alert("Rule Added")
+document.getElementById("rule_msg").innerText="✔ Rule Added Successfully"
 
 }
 
@@ -309,7 +337,6 @@ status="approved"
 window.location.href="/approval.html?status="+status
 
 }
-
 
 loadWorkflows()
 
