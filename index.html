@@ -7,29 +7,114 @@
 
 <link rel="stylesheet" href="style.css">
 
+<style>
+
+body{
+font-family: Arial;
+background: linear-gradient(120deg,#141e30,#243b55);
+color:white;
+padding:40px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.section{
+background:#1f4068;
+padding:20px;
+margin-bottom:25px;
+border-radius:10px;
+}
+
+h1{
+text-align:center;
+}
+
+input,select{
+padding:10px;
+margin:8px 0;
+width:100%;
+border:none;
+border-radius:5px;
+}
+
+button{
+padding:10px 20px;
+background:#00c6ff;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#00a3cc;
+}
+
+label{
+font-weight:bold;
+}
+
+.help{
+background:#0f3460;
+padding:15px;
+border-radius:8px;
+margin-bottom:20px;
+}
+
+</style>
+
 </head>
+
 
 <body>
 
+<div class="container">
+
 <h1>Workflow Automation Engine</h1>
+
+<div class="help">
+
+<h3>How To Use</h3>
+
+<p>1️⃣ Create Workflow</p>
+<p>2️⃣ Add Steps (Example: Manager Approval)</p>
+<p>3️⃣ Define Rules (Example: amount > 1000)</p>
+<p>4️⃣ Execute Workflow</p>
+
+</div>
+
+
 
 <div class="section">
 
 <h2>Create Workflow</h2>
 
-<input id="wf_name" placeholder="Workflow Name (Expense Approval)">
-<button onclick="createWorkflow()">Create</button>
+<label>Workflow Name</label>
+
+<input id="wf_name" placeholder="Example: Expense Approval">
+
+<button onclick="createWorkflow()">Create Workflow</button>
 
 </div>
+
 
 
 <div class="section">
 
 <h2>Add Step</h2>
 
+<label>Select Workflow</label>
+
 <select id="step_workflow"></select>
 
-<input id="step_name" placeholder="Step Name">
+<label>Step Name</label>
+
+<input id="step_name" placeholder="Example: Manager Approval">
+
+<label>Step Type</label>
 
 <select id="step_type">
 
@@ -39,41 +124,60 @@
 
 </select>
 
-<input id="step_order" placeholder="Order">
+<label>Step Order</label>
+
+<input id="step_order" placeholder="Example: 1">
 
 <button onclick="addStep()">Add Step</button>
 
 </div>
 
 
+
 <div class="section">
 
 <h2>Add Rule</h2>
 
-<input id="rule_step" placeholder="Step ID">
+<label>Step ID</label>
 
-<input id="rule_condition" placeholder="amount > 1000">
+<input id="rule_step" placeholder="Example: step_id">
 
-<input id="rule_next" placeholder="Next Step ID">
+<label>Condition</label>
 
-<input id="rule_priority" placeholder="Priority">
+<input id="rule_condition" placeholder="Example: amount > 1000">
+
+<label>Next Step ID</label>
+
+<input id="rule_next" placeholder="Example: next_step_id">
+
+<label>Priority</label>
+
+<input id="rule_priority" placeholder="Example: 1">
 
 <button onclick="addRule()">Add Rule</button>
 
 </div>
 
 
+
 <div class="section">
 
 <h2>Execute Workflow</h2>
 
+<label>Select Workflow</label>
+
 <select id="exec_workflow"></select>
 
-<input id="amount" placeholder="Amount">
+<label>Enter Amount</label>
 
-<button onclick="executeWorkflow()">Execute</button>
+<input id="amount" placeholder="Example: 1200">
+
+<button onclick="executeWorkflow()">Execute Workflow</button>
 
 </div>
+
+</div>
+
 
 
 <script>
@@ -99,6 +203,7 @@ exec.innerHTML+=`<option value="${w.id}">${w.name}</option>`
 }
 
 
+
 async function createWorkflow(){
 
 let name=document.getElementById("wf_name").value
@@ -111,9 +216,12 @@ body:JSON.stringify({name:name})
 
 })
 
+alert("Workflow Created")
+
 loadWorkflows()
 
 }
+
 
 
 async function addStep(){
@@ -143,6 +251,7 @@ alert("Step Added")
 }
 
 
+
 async function addRule(){
 
 let step=document.getElementById("rule_step").value
@@ -170,6 +279,7 @@ alert("Rule Added")
 }
 
 
+
 async function executeWorkflow(){
 
 let wf=document.getElementById("exec_workflow").value
@@ -192,16 +302,18 @@ let data=await res.json()
 
 let status="pending"
 
-if(data.logs.join().includes("Approved")) status="approved"
+if(data.logs.join().includes("Approved")){
+status="approved"
+}
 
 window.location.href="/approval.html?status="+status
 
 }
+
 
 loadWorkflows()
 
 </script>
 
 </body>
-
 </html>
