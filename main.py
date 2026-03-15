@@ -1,102 +1,164 @@
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
-from fastapi.middleware.cors import CORSMiddleware
-import uuid
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# -------------------------------
+# Data Storage (Temporary Memory)
+# -------------------------------
 
-workflows = []
-steps = []
-rules = []
+workflows = {}
+steps = {}
+rules = {}
+
+workflow_counter = 1
+step_counter = 1
 
 
-@app.get("/")
+# -------------------------------
+# Models
+# -------------------------------
+
+class Workflow(BaseModel):
+    name: str
+
+
+class Step(BaseModel):
+    name: str
+    step_type: str
+    order: int
+
+
+class Rule(BaseModel):
+    condition: str
+    next_step_id: int
+    priority: int
+
+
+class Execution(BaseModel):
+    data: dict
+
+
+# -------------------------------
+# Home Page
+# -------------------------------
+
+@app.get("/", response_class=HTMLResponse)
 def home():
-    return FileResponse("index.html")
+    with open("index.html") as f:
+        return f.read()
 
 
-@app.get("/approval.html")
-def approval():
-    return FileResponse("approval.html")
-
+# -------------------------------
+# List Workflows
+# -------------------------------
 
 @app.get("/workflows")
-def get_workflows():
-    return workflows
+def list_workflows():
+    return [{"id": i, "name": w["name"]} for i, w in workflows.items()]
 
+
+# -------------------------------
+# Create Workflow
+# -------------------------------
 
 @app.post("/workflows")
-def create_workflow(data: dict):
+def create_workflow(workflow: Workflow):
 
-    wf = {
-        "id": str(uuid.uuid4()),
-        "name": data["name"],
-        "version": 1
+    global workflow_counter
+
+    workflows[workflow_counter] = {
+        "name": workflow.name,
+        "steps": []
     }
 
-    workflows.append(wf)
+    workflow_counter += 1
 
-    return wf
+    return {"message": "Workflow created"}
 
+
+# -------------------------------
+# Add Step
+# -------------------------------
 
 @app.post("/workflows/{workflow_id}/steps")
-def add_step(workflow_id: str, data: dict):
+def add_step(workflow_id: int, step: Step):
 
-    step = {
-        "id": str(uuid.uuid4()),
-        "workflow_id": workflow_id,
-        "name": data["name"],
-        "step_type": data["step_type"],
-        "order": data["order"]
+    global step_counter
+
+    step_data = {
+        "id": step_counter,
+        "name": step.name,
+        "type": step.step_type,
+        "order": step.order,
+        "rules": []
     }
 
-    steps.append(step)
+    steps[step_counter] = step_data
+    workflows[workflow_id]["steps"].append(step_counter)
 
-    return step
+    step_counter += 1
 
+    return {"message": "Step added"}
+
+
+# -------------------------------
+# Add Rule
+# -------------------------------
 
 @app.post("/steps/{step_id}/rules")
-def add_rule(step_id: str, data: dict):
+def add_rule(step_id: int, rule: Rule):
 
-    rule = {
-        "id": str(uuid.uuid4()),
-        "step_id": step_id,
-        "condition": data["condition"],
-        "next_step_id": data["next_step_id"],
-        "priority": data["priority"]
+    rule_data = {
+        "condition": rule.condition,
+        "next_step_id": rule.next_step_id,
+        "priority": rule.priority
     }
 
-    rules.append(rule)
+    steps[step_id]["rules"].append(rule_data)
 
-    return rule
+    return {"message": "Rule added"}
 
+
+# -------------------------------
+# Execute Workflow
+# -------------------------------
 
 @app.post("/workflows/{workflow_id}/execute")
-def execute(workflow_id: str, data: dict):
-
-    amount = data["data"]["amount"]
+def execute_workflow(workflow_id: int, execution: Execution):
 
     logs = []
 
-    if amount > 1000:
+    workflow_steps = workflows[workflow_id]["steps"]
 
-        logs.append("Manager Approval Required")
+    amount = execution.data.get("amount", 0)
 
-        if amount > 10000:
-            logs.append("Finance Approval Required")
+    current_step = workflow_steps[0]
+
+    while True:
+
+        step = steps[current_step]
+
+        logs.append(f"Executing Step: {step['name']}")
+
+        next_step = None
+
+        for rule in step["rules"]:
+
+            condition = rule["condition"]
+
+            if "amount" in condition:
+
+                condition_value = int(condition.split(">")[1])
+
+                if amount > condition_value:
+                    next_step = rule["next_step_id"]
+
+        if next_step is None:
             logs.append("Expense Approved")
+            break
 
-        else:
-            logs.append("Expense Approved")
-
-    else:
-        logs.append("Expense Approved")
+        current_step = next_step
 
     return {"logs": logs}
