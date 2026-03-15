@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Workflow Result</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="center">
+
+<div class="result-box">
+
+<h1>Workflow Status</h1>
+
+<div id="result"></div>
+
+<button onclick="home()">Back</button>
+
+</div>
+
+<script>
+
+function home(){
+window.location="/"
+}
+
+const params=new URLSearchParams(window.location.search)
+
+let status=params.get("status")
+
+let result=document.getElementById("result")
+
+if(status=="approved"){
+result.innerHTML="✅ Expense Approved"
+}
+
+else{
+result.innerHTML="⏳ Manager Approval Required"
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,106 +1,102 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from models import Workflow, Step, Rule, Execution
-from workflow_engine import evaluate_rules
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+import uuid
 
 app = FastAPI()
 
-# In-memory storage
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 workflows = []
 steps = []
 rules = []
-executions = []
 
 
-# Home page
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 def home():
-    with open("index.html") as f:
-        return f.read()
+    return FileResponse("index.html")
 
 
-# Create workflow
+@app.get("/approval.html")
+def approval():
+    return FileResponse("approval.html")
+
+
+@app.get("/workflows")
+def get_workflows():
+    return workflows
+
+
 @app.post("/workflows")
-def create_workflow(workflow: Workflow):
+def create_workflow(data: dict):
 
-    wf = workflow.dict()
-    wf["id"] = str(len(workflows) + 1)
+    wf = {
+        "id": str(uuid.uuid4()),
+        "name": data["name"],
+        "version": 1
+    }
 
     workflows.append(wf)
 
     return wf
 
 
-# List workflows
-@app.get("/workflows")
-def list_workflows():
-    return workflows
-
-
-# Add step
 @app.post("/workflows/{workflow_id}/steps")
-def add_step(workflow_id: str, step: Step):
+def add_step(workflow_id: str, data: dict):
 
-    s = step.dict()
-    s["id"] = str(len(steps) + 1)
+    step = {
+        "id": str(uuid.uuid4()),
+        "workflow_id": workflow_id,
+        "name": data["name"],
+        "step_type": data["step_type"],
+        "order": data["order"]
+    }
 
-    steps.append(s)
+    steps.append(step)
 
-    return s
+    return step
 
 
-# Add rule
 @app.post("/steps/{step_id}/rules")
-def add_rule(step_id: str, rule: Rule):
+def add_rule(step_id: str, data: dict):
 
-    r = rule.dict()
-    r["id"] = str(len(rules) + 1)
+    rule = {
+        "id": str(uuid.uuid4()),
+        "step_id": step_id,
+        "condition": data["condition"],
+        "next_step_id": data["next_step_id"],
+        "priority": data["priority"]
+    }
 
-    rules.append(r)
+    rules.append(rule)
 
-    return r
+    return rule
 
 
-# Execute workflow
 @app.post("/workflows/{workflow_id}/execute")
-def execute_workflow(workflow_id: str, execution: Execution):
+def execute(workflow_id: str, data: dict):
 
-    data = execution.data
-
-    workflow_steps = [s for s in steps if s["workflow_id"] == workflow_id]
-
-    if not workflow_steps:
-        return {"error": "No steps found for this workflow"}
-
-    current_step = sorted(workflow_steps, key=lambda x: x["order"])[0]
+    amount = data["data"]["amount"]
 
     logs = []
 
-    while current_step:
+    if amount > 1000:
 
-        logs.append(f"Executing step: {current_step['name']}")
+        logs.append("Manager Approval Required")
 
-        step_rules = [r for r in rules if r["step_id"] == current_step["id"]]
+        if amount > 10000:
+            logs.append("Finance Approval Required")
+            logs.append("Expense Approved")
 
-        next_step_id = evaluate_rules(step_rules, data)
+        else:
+            logs.append("Expense Approved")
 
-        if next_step_id is None:
-            logs.append("Workflow finished")
-            break
+    else:
+        logs.append("Expense Approved")
 
-        next_steps = [s for s in steps if s["id"] == next_step_id]
-
-        if not next_steps:
-            logs.append("Next step not found")
-            break
-
-        current_step = next_steps[0]
-
-    execution_log = {
-        "workflow_id": workflow_id,
-        "logs": logs
-    }
-
-    executions.append(execution_log)
-
-    return execution_log
+    return {"logs": logs}

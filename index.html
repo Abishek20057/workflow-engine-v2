@@ -1,83 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <title>Workflow Automation Engine</title>
 
-<style>
+<link rel="stylesheet" href="style.css">
 
-body{
-font-family:"Times New Roman";
-background:linear-gradient(90deg,#0f2027,#203a43,#2c5364);
-color:white;
-text-align:center;
-padding:30px;
-}
-
-input,select,button{
-padding:10px;
-margin:5px;
-border-radius:6px;
-border:none;
-}
-
-button{
-background:#00c6ff;
-cursor:pointer;
-font-weight:bold;
-}
-
-.section{
-background:#1e3c5a;
-padding:20px;
-margin:20px;
-border-radius:10px;
-}
-
-table{
-margin:auto;
-border-collapse:collapse;
-width:80%;
-}
-
-th,td{
-border:1px solid #00c6ff;
-padding:10px;
-}
-
-th{
-background:#00c6ff;
-color:black;
-}
-
-#logs{
-background:black;
-padding:15px;
-margin-top:20px;
-}
-
-#diagram{
-display:flex;
-justify-content:center;
-align-items:center;
-flex-wrap:wrap;
-margin-top:20px;
-}
-
-.step-box{
-background:#00c6ff;
-color:black;
-padding:15px;
-margin:10px;
-border-radius:10px;
-font-weight:bold;
-}
-
-.arrow{
-font-size:25px;
-margin:10px;
-}
-
-</style>
 </head>
 
 <body>
@@ -86,41 +15,10 @@ margin:10px;
 
 <div class="section">
 
-<h3>How To Use</h3>
-
-<p>
-1️⃣ Create Workflow → 
-2️⃣ Add Steps → 
-3️⃣ Add Rules → 
-4️⃣ Execute Workflow
-</p>
-
-</div>
-
-<div class="section">
-
 <h2>Create Workflow</h2>
 
-<input id="wf_name" placeholder="Workflow Name">
-
+<input id="wf_name" placeholder="Workflow Name (Expense Approval)">
 <button onclick="createWorkflow()">Create</button>
-
-</div>
-
-
-<div class="section">
-
-<h2>Workflows</h2>
-
-<table id="workflowTable">
-
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Version</th>
-</tr>
-
-</table>
 
 </div>
 
@@ -150,39 +48,11 @@ margin:10px;
 
 <div class="section">
 
-<h2>Steps</h2>
-
-<table id="stepTable">
-
-<tr>
-<th>ID</th>
-<th>Workflow</th>
-<th>Name</th>
-<th>Type</th>
-<th>Order</th>
-</tr>
-
-</table>
-
-</div>
-
-
-<div class="section">
-
-<h2>Workflow Diagram</h2>
-
-<div id="diagram"></div>
-
-</div>
-
-
-<div class="section">
-
 <h2>Add Rule</h2>
 
-<select id="rule_step"></select>
+<input id="rule_step" placeholder="Step ID">
 
-<input id="rule_condition" placeholder="Condition (amount > 1000)">
+<input id="rule_condition" placeholder="amount > 1000">
 
 <input id="rule_next" placeholder="Next Step ID">
 
@@ -206,41 +76,20 @@ margin:10px;
 </div>
 
 
-<div id="logs">
-
-<h3>Execution Logs</h3>
-
-<div id="output"></div>
-
-</div>
-
-
 <script>
-
-let steps=[]
-
 
 async function loadWorkflows(){
 
-let res=await fetch("/workflows")
-let data=await res.json()
+let res = await fetch("/workflows")
+let data = await res.json()
 
-let table=document.getElementById("workflowTable")
-let dropdown=document.getElementById("step_workflow")
-let exec=document.getElementById("exec_workflow")
-
-table.innerHTML="<tr><th>ID</th><th>Name</th><th>Version</th></tr>"
+let dropdown = document.getElementById("step_workflow")
+let exec = document.getElementById("exec_workflow")
 
 dropdown.innerHTML=""
 exec.innerHTML=""
 
 data.forEach(w=>{
-
-table.innerHTML+=`<tr>
-<td>${w.id}</td>
-<td>${w.name}</td>
-<td>${w.version}</td>
-</tr>`
 
 dropdown.innerHTML+=`<option value="${w.id}">${w.name}</option>`
 exec.innerHTML+=`<option value="${w.id}">${w.name}</option>`
@@ -258,14 +107,7 @@ await fetch("/workflows",{
 
 method:"POST",
 headers:{"Content-Type":"application/json"},
-
-body:JSON.stringify({
-
-name:name,
-version:1,
-is_active:true
-
-})
+body:JSON.stringify({name:name})
 
 })
 
@@ -281,14 +123,13 @@ let name=document.getElementById("step_name").value
 let type=document.getElementById("step_type").value
 let order=document.getElementById("step_order").value
 
-let res=await fetch("/workflows/"+wf+"/steps",{
+await fetch("/workflows/"+wf+"/steps",{
 
 method:"POST",
 headers:{"Content-Type":"application/json"},
 
 body:JSON.stringify({
 
-workflow_id:wf,
 name:name,
 step_type:type,
 order:Number(order)
@@ -297,50 +138,7 @@ order:Number(order)
 
 })
 
-let data=await res.json()
-
-steps.push(data)
-
-updateDiagram()
-
-let table=document.getElementById("stepTable")
-
-table.innerHTML+=`<tr>
-
-<td>${data.id}</td>
-<td>${data.workflow_id}</td>
-<td>${data.name}</td>
-<td>${data.step_type}</td>
-<td>${data.order}</td>
-
-</tr>`
-
-let ruleStep=document.getElementById("rule_step")
-
-ruleStep.innerHTML+=`<option value="${data.id}">${data.name}</option>`
-
-}
-
-
-function updateDiagram(){
-
-let diagram=document.getElementById("diagram")
-
-diagram.innerHTML=""
-
-steps
-.sort((a,b)=>a.order-b.order)
-.forEach((s,i)=>{
-
-diagram.innerHTML+=`<div class="step-box">${s.name}</div>`
-
-if(i<steps.length-1){
-
-diagram.innerHTML+=`<div class="arrow">→</div>`
-
-}
-
-})
+alert("Step Added")
 
 }
 
@@ -359,7 +157,6 @@ headers:{"Content-Type":"application/json"},
 
 body:JSON.stringify({
 
-step_id:step,
 condition:condition,
 next_step_id:next,
 priority:Number(priority)
@@ -385,7 +182,6 @@ headers:{"Content-Type":"application/json"},
 
 body:JSON.stringify({
 
-workflow_id:wf,
 data:{amount:Number(amount)}
 
 })
@@ -394,14 +190,18 @@ data:{amount:Number(amount)}
 
 let data=await res.json()
 
-document.getElementById("output").innerHTML=data.logs.join("<br>")
+let status="pending"
+
+if(data.logs.join().includes("Approved")) status="approved"
+
+window.location.href="/approval.html?status="+status
 
 }
-
 
 loadWorkflows()
 
 </script>
 
 </body>
+
 </html>
