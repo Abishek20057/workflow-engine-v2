@@ -15,13 +15,27 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
             "workflows": engine.workflows,
-            "steps": engine.steps,
+            "steps": engine.steps
+        }
+    )
+
+
+@app.get("/result", response_class=HTMLResponse)
+def result_page(request: Request):
+    return templates.TemplateResponse("result.html", {"request": request})
+
+
+@app.get("/history", response_class=HTMLResponse)
+def history_page(request: Request):
+    return templates.TemplateResponse(
+        "history.html",
+        {
+            "request": request,
             "history": engine.execution_history
         }
     )
@@ -29,41 +43,23 @@ def home(request: Request):
 
 @app.post("/workflow")
 def create_workflow(w: Workflow):
-
     wid = engine.create_workflow(w.name)
-
     return {"workflow_id": wid}
 
 
 @app.post("/step")
 def create_step(s: Step):
-
-    sid = engine.create_step(
-        s.workflow_id,
-        s.name,
-        s.step_type,
-        s.order
-    )
-
+    sid = engine.create_step(s.workflow_id, s.name, s.step_type, s.order)
     return {"step_id": sid}
 
 
 @app.post("/rule")
 def create_rule(r: Rule):
-
-    rid = engine.create_rule(
-        r.step_id,
-        r.condition,
-        r.next_step_id,
-        r.priority
-    )
-
+    rid = engine.create_rule(r.step_id, r.condition, r.next_step_id, r.priority)
     return {"rule_id": rid}
 
 
 @app.post("/execute/{workflow_id}")
 def execute(workflow_id: str, data: ExecutionInput):
-
     logs = engine.execute_workflow(workflow_id, data.data)
-
     return {"logs": logs}

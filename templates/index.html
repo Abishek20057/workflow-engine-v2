@@ -13,6 +13,8 @@
 
 <h1>Workflow Automation Engine</h1>
 
+<button onclick="showHistory()">View History</button>
+
 <div class="box">
 
 <h2>Create Workflow</h2>
@@ -85,38 +87,6 @@
 <button onclick="runWorkflow()">Run</button>
 
 </div>
-
-
-<div class="box">
-
-<h2>Execution Logs</h2>
-
-<pre id="logs"></pre>
-
-</div>
-
-
-<h2>Execution History</h2>
-
-<table>
-
-<tr>
-<th>Workflow</th>
-<th>Input</th>
-<th>Path</th>
-</tr>
-
-{% for h in history %}
-
-<tr>
-<td>{{h.workflow}}</td>
-<td>{{h.input}}</td>
-<td>{{h.path}}</td>
-</tr>
-
-{% endfor %}
-
-</table>
 
 
 <script src="/static/script.js"></script>

@@ -15,10 +15,7 @@ def create_workflow(name):
 
     wid = f"wf_{workflow_counter}"
 
-    workflows[wid] = {
-        "id": wid,
-        "name": name
-    }
+    workflows[wid] = {"id": wid, "name": name}
 
     workflow_counter += 1
 
@@ -73,9 +70,7 @@ def execute_workflow(workflow_id, data):
     wf_steps = sorted(wf_steps, key=lambda x: x["order"])
 
     if not wf_steps:
-
         logs.append("No steps found")
-
         return logs
 
     current_step = wf_steps[0]
@@ -104,32 +99,21 @@ def execute_workflow(workflow_id, data):
 
                     break
 
-                else:
-
-                    logs.append("Condition FALSE")
-
             except:
 
                 logs.append("Condition Error")
 
         if next_step:
-
             current_step = next_step
-
         else:
-
             break
 
     logs.append("Workflow Completed")
 
     execution_history.append({
-
         "workflow": workflow_id,
-
         "input": data,
-
         "path": " → ".join(path)
-
     })
 
     return logs

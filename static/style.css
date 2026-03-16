@@ -10,6 +10,22 @@ background:#1e293b;
 padding:20px;
 margin-bottom:20px;
 border-radius:10px;
+
+animation:fadein 1s ease;
+}
+
+@keyframes fadein{
+
+from{
+opacity:0;
+transform:translateY(20px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
 }
 
 input,select{
@@ -26,11 +42,6 @@ padding:10px;
 color:white;
 border-radius:5px;
 cursor:pointer;
-}
-
-pre{
-background:black;
-padding:10px;
 }
 
 table{
