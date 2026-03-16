@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 import uuid
 
 from models import workflows, steps, rules, history
-from engine import engine
+from engine import run_engine
 
 app = FastAPI()
 

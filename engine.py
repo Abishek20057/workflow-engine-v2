@@ -1,38 +1,34 @@
 from models import steps, rules
 
-def execute_engine(workflow_id, data):
+def run_engine(workflow_id, amount):
 
-    log=[]
-    path=[]
+    logs = []
+    path = []
 
-    log.append("🚀 Workflow Started")
+    logs.append("🚀 Workflow Started")
 
-    current_steps=[s for s in steps.values() if s["workflow_id"]==workflow_id]
-    current_steps=sorted(current_steps,key=lambda x:x["order"])
+    workflow_steps = [s for s in steps.values() if s["workflow_id"] == workflow_id]
 
-    for step in current_steps:
+    workflow_steps = sorted(workflow_steps, key=lambda x: x["order"])
 
-        log.append(f"📋 Step : {step['name']}")
-        path.append(step['name'])
+    for step in workflow_steps:
 
-        step_rules=[r for r in rules.values() if r["step_id"]==step["id"]]
+        logs.append(f"Step : {step['name']}")
+        path.append(step["name"])
 
-        for r in step_rules:
+        step_rules = [r for r in rules.values() if r["step_id"] == step["id"]]
 
-            condition=r["condition"]
+        for rule in step_rules:
 
-            if "amount" in condition:
+            if "amount" in rule["condition"]:
 
-                limit=int(condition.split(">")[1])
+                limit = int(rule["condition"].split(">")[1])
 
-                if data["amount"]>limit:
-
-                    log.append("✅ Condition TRUE")
-
+                if amount > limit:
+                    logs.append("Condition TRUE")
                 else:
+                    logs.append("Condition FALSE")
 
-                    log.append("❌ Condition FALSE")
+    logs.append("Workflow Completed")
 
-    log.append("🎉 Workflow Completed")
-
-    return log,path
+    return logs, path
