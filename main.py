@@ -1,43 +1,17 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 
 app = FastAPI()
 
-# serve css files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# in-memory database
 workflows = {}
 steps = {}
-rules = {}
 
 workflow_id = 1
 step_id = 1
 
-
-class Workflow(BaseModel):
-    name: str
-
-
-class Step(BaseModel):
-    name: str
-    step_type: str
-    order: int
-
-
-class Rule(BaseModel):
-    condition: str
-    next_step_id: int
-    priority: int
-
-
-class Execution(BaseModel):
-    data: dict
-
-
-# ---------------- HOME PAGE ----------------
 
 @app.get("/", response_class=HTMLResponse)
 def home():
@@ -45,103 +19,54 @@ def home():
         return f.read()
 
 
-# ---------------- WORKFLOWS ----------------
+@app.get("/approval.html", response_class=HTMLResponse)
+def approval():
+    with open("templates/approval.html", encoding="utf-8") as f:
+        return f.read()
+
 
 @app.get("/workflows")
-def list_workflows():
-    return [{"id": i, "name": w["name"]} for i, w in workflows.items()]
+def get_workflows():
+    return list(workflows.values())
 
 
 @app.post("/workflows")
-def create_workflow(workflow: Workflow):
+def create_workflow(data: dict):
     global workflow_id
 
     workflows[workflow_id] = {
-        "name": workflow.name,
-        "steps": []
+        "id": workflow_id,
+        "name": data["name"]
     }
 
     workflow_id += 1
 
-    return {"message": "Workflow created"}
+    return {"message": "workflow created"}
 
-
-# ---------------- STEPS ----------------
 
 @app.post("/workflows/{wf_id}/steps")
-def add_step(wf_id: int, step: Step):
-
+def add_step(wf_id: int, data: dict):
     global step_id
 
-    step_data = {
+    steps[step_id] = {
         "id": step_id,
-        "name": step.name,
-        "type": step.step_type,
-        "order": step.order,
-        "rules": []
+        "workflow": wf_id,
+        "name": data["name"]
     }
-
-    steps[step_id] = step_data
-
-    workflows[wf_id]["steps"].append(step_id)
 
     step_id += 1
 
-    return {"message": "Step added"}
+    return {"message": "step added"}
 
 
-# ---------------- RULES ----------------
+@app.post("/execute")
+def execute(data: dict):
 
-@app.post("/steps/{step_id}/rules")
-def add_rule(step_id: int, rule: Rule):
+    amount = data["amount"]
 
-    rule_data = {
-        "condition": rule.condition,
-        "next_step_id": rule.next_step_id,
-        "priority": rule.priority
-    }
+    if amount > 1000:
+        status = "approved"
+    else:
+        status = "manager"
 
-    steps[step_id]["rules"].append(rule_data)
-
-    return {"message": "Rule added"}
-
-
-# ---------------- EXECUTION ----------------
-
-@app.post("/workflows/{wf_id}/execute")
-def execute_workflow(wf_id: int, execution: Execution):
-
-    logs = []
-
-    wf_steps = workflows[wf_id]["steps"]
-
-    amount = execution.data.get("amount", 0)
-
-    current = wf_steps[0]
-
-    while True:
-
-        step = steps[current]
-
-        logs.append(f"Executing step: {step['name']}")
-
-        next_step = None
-
-        for rule in step["rules"]:
-
-            cond = rule["condition"]
-
-            if "amount" in cond:
-
-                value = int(cond.split(">")[1])
-
-                if amount > value:
-                    next_step = rule["next_step_id"]
-
-        if next_step is None:
-            logs.append("Approved")
-            break
-
-        current = next_step
-
-    return {"logs": logs}
+    return {"status": status}

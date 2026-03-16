@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -10,13 +9,13 @@
 
 </head>
 
-<body class="center">
+<body>
 
-<div class="result-box">
+<div class="result">
 
 <h1>Workflow Status</h1>
 
-<div id="result"></div>
+<div id="status"></div>
 
 <button onclick="home()">Back</button>
 
@@ -25,20 +24,27 @@
 <script>
 
 function home(){
+
 window.location="/"
+
 }
 
-const params=new URLSearchParams(window.location.search)
+let params = new URLSearchParams(window.location.search)
 
-let status=params.get("status")
+let status = params.get("status")
 
-let result=document.getElementById("result")
+let box=document.getElementById("status")
 
 if(status=="approved"){
-result.innerHTML="✅ Approved"
+
+box.innerHTML="✅ CEO Approved 🎉"
+
 }
+
 else{
-result.innerHTML="⏳ Pending Approval"
+
+box.innerHTML="⏳ Manager Approval Required"
+
 }
 
 </script>

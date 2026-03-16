@@ -1,39 +1,89 @@
 body{
-font-family: Arial;
-background: linear-gradient(120deg,#141e30,#243b55);
+
+font-family:Arial;
+background:linear-gradient(120deg,#141e30,#243b55);
 color:white;
 padding:40px;
+
 }
 
 .container{
+
 max-width:900px;
 margin:auto;
+
 }
 
 .section{
+
 background:#1f4068;
 padding:20px;
 margin-bottom:25px;
 border-radius:10px;
+
 }
 
 input,select{
+
 padding:10px;
 margin:8px 0;
 width:100%;
 border:none;
 border-radius:5px;
+
 }
 
 button{
+
 padding:10px 20px;
 background:#00c6ff;
 border:none;
 border-radius:5px;
 cursor:pointer;
-font-weight:bold;
+
 }
 
 button:hover{
+
 background:#00a3cc;
+
+}
+
+#diagram{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+
+}
+
+.start{
+
+background:green;
+padding:10px;
+border-radius:8px;
+
+}
+
+.step{
+
+background:#00c6ff;
+padding:10px;
+border-radius:8px;
+animation:pop 0.4s;
+
+}
+
+@keyframes pop{
+
+from{transform:scale(0)}
+to{transform:scale(1)}
+
+}
+
+.result{
+
+text-align:center;
+margin-top:200px;
+
 }
