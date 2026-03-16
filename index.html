@@ -1,134 +1,139 @@
-<!DOCTYPE html><html><head><title>Workflow Automation Engine</title><style>
+<!DOCTYPE html>
 
-body{
-font-family: Arial;
-background: linear-gradient(120deg,#141e30,#243b55);
-color:white;
-padding:40px;
-}
+<html>
 
-.container{
-max-width:900px;
-margin:auto;
-}
+<head>
 
-.section{
-background:#1f4068;
-padding:20px;
-margin-bottom:25px;
-border-radius:10px;
-}
+<title>Workflow Automation Engine</title>
 
-h1{
-text-align:center;
-}
+<link rel="stylesheet" href="style.css">
 
-input,select{
-padding:10px;
-margin:8px 0;
-width:100%;
-border:none;
-border-radius:5px;
-}
+</head>
 
-button{
-padding:10px 20px;
-background:#00c6ff;
-border:none;
-border-radius:5px;
-cursor:pointer;
-font-weight:bold;
-}
+<body>
 
-button:hover{
-background:#00a3cc;
-}
+<div class="container">
 
-label{
-font-weight:bold;
-}
+<h1>Workflow Automation Engine</h1>
 
-.help{
-background:#0f3460;
-padding:15px;
-border-radius:8px;
-margin-bottom:20px;
-}
+<div class="section help">
 
-/* Visual Workflow */
+<h3>How To Use</h3>
 
-#diagram{
-display:flex;
-gap:15px;
-flex-wrap:wrap;
-margin-top:15px;
-}
+<p>1️⃣ Create Workflow</p>
+<p>2️⃣ Add Steps</p>
+<p>3️⃣ Define Rules</p>
+<p>4️⃣ Execute Workflow</p>
 
-.step-box{
-background:#00c6ff;
-color:black;
-padding:12px 20px;
-border-radius:8px;
-font-weight:bold;
-animation:flow 0.6s ease;
-}
+</div>
 
-.arrow{
-font-size:22px;
-padding-top:10px;
-}
+<div class="section">
 
-@keyframes flow{
-0%{
-transform:translateY(-20px);
-opacity:0;
-}
-100%{
-transform:translateY(0);
-opacity:1;
-}
-}
+<h2>Create Workflow</h2>
 
-</style></head><body><div class="container"><h1>Workflow Automation Engine</h1><div class="help"><h3>How To Use</h3><p>1️⃣ Create Workflow</p>
-<p>2️⃣ Add Steps (Example: Manager Approval)</p>
-<p>3️⃣ Define Rules (Example: amount > 1000)</p>
-<p>4️⃣ Execute Workflow</p></div><div class="section"><h2>Create Workflow</h2><label>Workflow Name</label>
+<label>Workflow Name</label>
 
-<input id="wf_name" placeholder="Example: Expense Approval / Leave Request"><button onclick="createWorkflow()">Create Workflow</button>
+<input id="wf_name" placeholder="Example: Expense Approval">
 
-</div><div class="section"><h2>Add Step</h2><label>Select Workflow</label>
+<button onclick="createWorkflow()">Create Workflow</button>
+
+</div>
+
+<div class="section">
+
+<h2>Add Step</h2>
+
+<label>Select Workflow</label>
 
 <select id="step_workflow"></select>
 
 <label>Step Name</label>
 
-<input id="step_name" placeholder="Example: Manager Approval"><label>Step Type</label>
+<input id="step_name" placeholder="Example: Manager Approval">
 
-<select id="step_type"><option value="task">Task</option>
+<label>Step Type</label>
+
+<select id="step_type">
+
+<option value="task">Task</option>
 <option value="approval">Approval</option>
-<option value="notification">Notification</option></select><label>Step Order</label>
+<option value="notification">Notification</option>
 
-<input id="step_order" placeholder="Example: 1"><button onclick="addStep()">Add Step</button>
+</select>
 
-</div><div class="section"><h2>Workflow Diagram</h2><div id="diagram"></div></div><div class="section"><h2>Add Rule</h2><label>Step ID</label>
+<label>Step Order</label>
 
-<input id="rule_step" placeholder="Example: step_id"><label>Condition</label>
+<input id="step_order">
 
-<input id="rule_condition" placeholder="Example: amount > 1000"><label>Next Step ID</label>
+<button onclick="addStep()">Add Step</button>
 
-<input id="rule_next" placeholder="Example: next_step_id"><label>Priority</label>
+</div>
 
-<input id="rule_priority" placeholder="Example: 1"><button onclick="addRule()">Add Rule</button>
+<div class="section">
 
-</div><div class="section"><h2>Execute Workflow</h2><label>Select Workflow</label>
+<h2>Workflow Diagram</h2>
+
+<div id="diagram">
+
+<div class="step-box start">Start</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>Add Rule</h2>
+
+<label>Step ID</label>
+
+<input id="rule_step">
+
+<label>Condition</label>
+
+<select id="condition_field">
+<option value="amount">amount</option>
+</select>
+
+<select id="condition_operator">
+<option value=">">></option>
+<option value="<"><</option>
+<option value="==">==</option>
+</select>
+
+<input id="condition_value" placeholder="1000">
+
+<label>Next Step ID</label>
+
+<input id="rule_next">
+
+<label>Priority</label>
+
+<input id="rule_priority">
+
+<button onclick="addRule()">Add Rule</button>
+
+</div>
+
+<div class="section">
+
+<h2>Execute Workflow</h2>
+
+<label>Select Workflow</label>
 
 <select id="exec_workflow"></select>
 
 <label>Enter Amount</label>
 
-<input id="amount" placeholder="Example: 1200"><button onclick="executeWorkflow()">Execute Workflow</button>
+<input id="amount">
 
-</div></div><script>
+<button onclick="executeWorkflow()">Execute Workflow</button>
+
+</div>
+
+</div>
+
+<script>
 
 async function loadWorkflows(){
 
@@ -156,11 +161,16 @@ function addStepVisual(name){
 
 let diagram=document.getElementById("diagram")
 
-if(diagram.children.length>0){
-diagram.innerHTML+=`<div class="arrow">➜</div>`
-}
+let arrow=document.createElement("div")
+arrow.className="arrow"
+arrow.innerHTML="➡"
 
-diagram.innerHTML+=`<div class="step-box">${name}</div>`
+let step=document.createElement("div")
+step.className="step-box"
+step.innerText=name
+
+diagram.appendChild(arrow)
+diagram.appendChild(step)
 
 }
 
@@ -219,7 +229,13 @@ alert("Step Added")
 async function addRule(){
 
 let step=document.getElementById("rule_step").value
-let condition=document.getElementById("rule_condition").value
+
+let field=document.getElementById("condition_field").value
+let operator=document.getElementById("condition_operator").value
+let value=document.getElementById("condition_value").value
+
+let condition=field+" "+operator+" "+value
+
 let next=document.getElementById("rule_next").value
 let priority=document.getElementById("rule_priority").value
 
@@ -231,7 +247,7 @@ headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 
 condition:condition,
-next_step_id:next,
+next_step_id:Number(next),
 priority:Number(priority)
 
 })
@@ -276,5 +292,7 @@ window.location.href="/approval.html?status="+status
 
 loadWorkflows()
 
-</script></body>
+</script>
+
+</body>
 </html>
