@@ -1,90 +1,69 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+
+import engine
+from models import Workflow, Step, Rule, ExecutionInput
 
 app = FastAPI()
 
+templates = Jinja2Templates(directory="templates")
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-workflows = {}
-steps = {}
-rules = {}
-
-workflow_id = 1
-step_id = 1
-rule_id = 1
 
 
 @app.get("/", response_class=HTMLResponse)
-def home():
-    with open("templates/index.html", encoding="utf-8") as f:
-        return f.read()
+def home(request: Request):
+
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "workflows": engine.workflows,
+            "steps": engine.steps,
+            "history": engine.execution_history
+        }
+    )
 
 
-@app.get("/approval.html", response_class=HTMLResponse)
-def approval():
-    with open("templates/approval.html", encoding="utf-8") as f:
-        return f.read()
+@app.post("/workflow")
+def create_workflow(w: Workflow):
+
+    wid = engine.create_workflow(w.name)
+
+    return {"workflow_id": wid}
 
 
-@app.get("/workflows")
-def get_workflows():
-    return list(workflows.values())
+@app.post("/step")
+def create_step(s: Step):
+
+    sid = engine.create_step(
+        s.workflow_id,
+        s.name,
+        s.step_type,
+        s.order
+    )
+
+    return {"step_id": sid}
 
 
-@app.post("/workflows")
-def create_workflow(data: dict):
+@app.post("/rule")
+def create_rule(r: Rule):
 
-    global workflow_id
+    rid = engine.create_rule(
+        r.step_id,
+        r.condition,
+        r.next_step_id,
+        r.priority
+    )
 
-    workflows[workflow_id] = {
-        "id": workflow_id,
-        "name": data["name"]
-    }
-
-    workflow_id += 1
-
-    return {"message": "workflow created"}
+    return {"rule_id": rid}
 
 
-@app.post("/workflows/{wf_id}/steps")
-def add_step(wf_id: int, data: dict):
+@app.post("/execute/{workflow_id}")
+def execute(workflow_id: str, data: ExecutionInput):
 
-    global step_id
+    logs = engine.execute_workflow(workflow_id, data.data)
 
-    steps[step_id] = {
-        "id": step_id,
-        "workflow": wf_id,
-        "name": data["name"]
-    }
-
-    step_id += 1
-
-    return {"message": "step added"}
-
-
-@app.post("/steps/{step_id}/rules")
-def add_rule(step_id: int, data: dict):
-
-    global rule_id
-
-    rules[rule_id] = {
-        "id": rule_id,
-        "step": step_id,
-        "condition": data["condition"]
-    }
-
-    rule_id += 1
-
-    return {"message": "rule added"}
-
-
-@app.post("/execute")
-def execute(data: dict):
-
-    amount = data["amount"]
-
-    if amount > 1000:
-        return {"status": "approved"}
-    else:
-        return {"status": "manager"}
+    return {"logs": logs}

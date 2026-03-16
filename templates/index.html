@@ -4,190 +4,123 @@
 <head>
 
 <title>Workflow Automation Engine</title>
+
 <link rel="stylesheet" href="/static/style.css">
 
 </head>
 
 <body>
 
-<div class="container">
-
 <h1>Workflow Automation Engine</h1>
 
-<div class="section">
+<div class="box">
 
 <h2>Create Workflow</h2>
 
-<select id="wf_type">
+<input id="workflowName" placeholder="Workflow Name">
 
-<option>Expense Approval</option>
-<option>Leave Approval</option>
-<option>Recruitment Process</option>
-<option>Purchase Request</option>
-<option>Bug Approval</option>
-<option>HR Onboarding</option>
-<option value="custom">Custom Workflow</option>
-
-</select>
-
-<input id="custom_name" placeholder="Custom Workflow Name">
-
-<button onclick="createWorkflow()">Create Workflow</button>
+<button onclick="createWorkflow()">Create</button>
 
 </div>
 
 
-<div class="section">
+<div class="box">
 
 <h2>Add Step</h2>
 
-<select id="workflow_select"></select>
+<select id="workflowSelect">
+{% for id,w in workflows.items() %}
+<option value="{{id}}">{{w.name}}</option>
+{% endfor %}
+</select>
 
-<input id="step_name" placeholder="Example: Manager Approval">
+<input id="stepName" placeholder="Step Name">
 
-<button onclick="addStep()">Add Step</button>
+<input id="stepType" placeholder="approval or task">
 
-</div>
+<input id="stepOrder" placeholder="Order">
 
-
-<div class="section">
-
-<h2>Workflow Diagram</h2>
-
-<div id="diagram">
-
-<div class="node start">Start</div>
-
-</div>
+<button onclick="createStep()">Add Step</button>
 
 </div>
 
 
-<div class="section">
+<div class="box">
 
 <h2>Add Rule</h2>
 
-<input id="rule_step" placeholder="Step ID">
+<select id="ruleStepId">
+{% for id,s in steps.items() %}
+<option value="{{id}}">{{s.name}}</option>
+{% endfor %}
+</select>
 
-<input id="rule_condition" placeholder="Example: amount > 1000">
+<input id="condition" placeholder="amount > 1000">
 
-<button onclick="addRule()">Add Rule</button>
+<select id="nextStep">
+{% for id,s in steps.items() %}
+<option value="{{id}}">{{s.name}}</option>
+{% endfor %}
+</select>
+
+<input id="priority" placeholder="Priority">
+
+<button onclick="createRule()">Add Rule</button>
 
 </div>
 
 
-<div class="section">
+<div class="box">
 
 <h2>Execute Workflow</h2>
 
-<input id="amount" placeholder="Enter amount">
+<select id="execWorkflow">
+{% for id,w in workflows.items() %}
+<option value="{{id}}">{{w.name}}</option>
+{% endfor %}
+</select>
 
-<button onclick="executeWorkflow()">Execute</button>
+<input id="amount" placeholder="Amount">
+
+<button onclick="runWorkflow()">Run</button>
 
 </div>
 
+
+<div class="box">
+
+<h2>Execution Logs</h2>
+
+<pre id="logs"></pre>
+
 </div>
 
 
-<script>
+<h2>Execution History</h2>
 
-async function loadWorkflows(){
+<table>
 
-let res = await fetch("/workflows")
-let data = await res.json()
+<tr>
+<th>Workflow</th>
+<th>Input</th>
+<th>Path</th>
+</tr>
 
-let select=document.getElementById("workflow_select")
+{% for h in history %}
 
-select.innerHTML=""
+<tr>
+<td>{{h.workflow}}</td>
+<td>{{h.input}}</td>
+<td>{{h.path}}</td>
+</tr>
 
-data.forEach(w=>{
+{% endfor %}
 
-select.innerHTML+=`<option value="${w.id}">${w.name}</option>`
+</table>
 
-})
 
-}
-
-async function createWorkflow(){
-
-let type=document.getElementById("wf_type").value
-
-if(type=="custom"){
-type=document.getElementById("custom_name").value
-}
-
-await fetch("/workflows",{
-
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({name:type})
-
-})
-
-alert("Workflow Created")
-
-loadWorkflows()
-
-}
-
-async function addStep(){
-
-let wf=document.getElementById("workflow_select").value
-
-let name=document.getElementById("step_name").value
-
-await fetch("/workflows/"+wf+"/steps",{
-
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({name:name})
-
-})
-
-let diagram=document.getElementById("diagram")
-
-diagram.innerHTML+=`<div class="node">${name}</div>`
-
-}
-
-async function addRule(){
-
-let step=document.getElementById("rule_step").value
-let condition=document.getElementById("rule_condition").value
-
-await fetch("/steps/"+step+"/rules",{
-
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({condition:condition})
-
-})
-
-alert("Rule Added")
-
-}
-
-async function executeWorkflow(){
-
-let amount=document.getElementById("amount").value
-
-let res=await fetch("/execute",{
-
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({amount:Number(amount)})
-
-})
-
-let data=await res.json()
-
-window.location.href="/approval.html?status="+data.status
-
-}
-
-loadWorkflows()
-
-</script>
+<script src="/static/script.js"></script>
 
 </body>
+
 </html>
