@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -16,31 +15,18 @@
 
 <h1>Workflow Automation Engine</h1>
 
-<div class="section help">
-
-<h3>How To Use</h3>
-
-<p>1️⃣ Select Workflow Type</p>
-<p>2️⃣ Add Steps</p>
-<p>3️⃣ Define Rules</p>
-<p>4️⃣ Execute Workflow</p>
-
-</div>
-
 <div class="section">
 
 <h2>Create Workflow</h2>
 
-<label>Select Workflow Type</label>
-
 <select id="wf_name">
 
-<option value="Expense Approval">Expense Approval</option>
-<option value="Leave Approval">Leave Approval</option>
-<option value="Recruitment Process">Recruitment Process</option>
-<option value="Purchase Request">Purchase Request</option>
-<option value="Bug Approval">Bug Approval</option>
-<option value="HR Onboarding">HR Onboarding</option>
+<option>Expense Approval</option>
+<option>Leave Approval</option>
+<option>Recruitment Process</option>
+<option>Purchase Request</option>
+<option>Bug Approval</option>
+<option>HR Onboarding</option>
 
 </select>
 
@@ -48,35 +34,30 @@
 
 </div>
 
+
+
 <div class="section">
 
 <h2>Add Step</h2>
 
-<label>Select Workflow</label>
-
 <select id="step_workflow"></select>
 
-<label>Step Name</label>
-
-<input id="step_name" placeholder="Example: Manager Approval">
-
-<label>Step Type</label>
+<input id="step_name" placeholder="Step Name">
 
 <select id="step_type">
 
 <option value="task">Task</option>
 <option value="approval">Approval</option>
-<option value="notification">Notification</option>
 
 </select>
 
-<label>Step Order</label>
-
-<input id="step_order">
+<input id="step_order" placeholder="Order">
 
 <button onclick="addStep()">Add Step</button>
 
 </div>
+
+
 
 <div class="section">
 
@@ -90,15 +71,13 @@
 
 </div>
 
+
+
 <div class="section">
 
 <h2>Add Rule</h2>
 
-<label>Step ID</label>
-
-<input id="rule_step">
-
-<label>Condition</label>
+<input id="rule_step" placeholder="Step ID">
 
 <select id="condition_field">
 
@@ -109,42 +88,36 @@
 <select id="condition_operator">
 
 <option value=">">></option>
-<option value="<"><</option>
-<option value="==">==</option>
 
 </select>
 
-<input id="condition_value" placeholder="Example: 1000">
+<input id="condition_value" placeholder="1000">
 
-<label>Next Step ID</label>
+<input id="rule_next" placeholder="Next Step ID">
 
-<input id="rule_next">
-
-<label>Priority</label>
-
-<input id="rule_priority">
+<input id="rule_priority" placeholder="Priority">
 
 <button onclick="addRule()">Add Rule</button>
 
 </div>
 
+
+
 <div class="section">
 
 <h2>Execute Workflow</h2>
 
-<label>Select Workflow</label>
-
 <select id="exec_workflow"></select>
 
-<label>Enter Amount</label>
-
-<input id="amount">
+<input id="amount" placeholder="Amount">
 
 <button onclick="executeWorkflow()">Execute Workflow</button>
 
 </div>
 
 </div>
+
+
 
 <script>
 
@@ -174,16 +147,7 @@ function addStepVisual(name){
 
 let diagram=document.getElementById("diagram")
 
-let arrow=document.createElement("div")
-arrow.className="arrow"
-arrow.innerHTML="➡"
-
-let step=document.createElement("div")
-step.className="step-box"
-step.innerText=name
-
-diagram.appendChild(arrow)
-diagram.appendChild(step)
+diagram.innerHTML+=` ➜ <div class="step-box">${name}</div>`
 
 }
 
