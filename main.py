@@ -5,8 +5,10 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+# serve css files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# in-memory database
 workflows = {}
 steps = {}
 rules = {}
@@ -35,18 +37,18 @@ class Execution(BaseModel):
     data: dict
 
 
+# ---------------- HOME PAGE ----------------
+
 @app.get("/", response_class=HTMLResponse)
 def home():
-    with open("templates/index.html") as f:
+    with open("templates/index.html", encoding="utf-8") as f:
         return f.read()
 
 
-# -----------------------------
-# WORKFLOW APIs
-# -----------------------------
+# ---------------- WORKFLOWS ----------------
 
 @app.get("/workflows")
-def get_workflows():
+def list_workflows():
     return [{"id": i, "name": w["name"]} for i, w in workflows.items()]
 
 
@@ -64,12 +66,11 @@ def create_workflow(workflow: Workflow):
     return {"message": "Workflow created"}
 
 
-# -----------------------------
-# STEP APIs
-# -----------------------------
+# ---------------- STEPS ----------------
 
 @app.post("/workflows/{wf_id}/steps")
 def add_step(wf_id: int, step: Step):
+
     global step_id
 
     step_data = {
@@ -89,9 +90,7 @@ def add_step(wf_id: int, step: Step):
     return {"message": "Step added"}
 
 
-# -----------------------------
-# RULE APIs
-# -----------------------------
+# ---------------- RULES ----------------
 
 @app.post("/steps/{step_id}/rules")
 def add_rule(step_id: int, rule: Rule):
@@ -107,9 +106,7 @@ def add_rule(step_id: int, rule: Rule):
     return {"message": "Rule added"}
 
 
-# -----------------------------
-# EXECUTE WORKFLOW
-# -----------------------------
+# ---------------- EXECUTION ----------------
 
 @app.post("/workflows/{wf_id}/execute")
 def execute_workflow(wf_id: int, execution: Execution):
@@ -126,7 +123,7 @@ def execute_workflow(wf_id: int, execution: Execution):
 
         step = steps[current]
 
-        logs.append(f"Step: {step['name']}")
+        logs.append(f"Executing step: {step['name']}")
 
         next_step = None
 
