@@ -1,119 +1,38 @@
-workflows = {}
-steps = {}
-rules = {}
+from models import steps, rules
 
-execution_history = []
+def execute_engine(workflow_id, data):
 
-workflow_counter = 1
-step_counter = 1
-rule_counter = 1
+    log=[]
+    path=[]
 
+    log.append("🚀 Workflow Started")
 
-def create_workflow(name):
+    current_steps=[s for s in steps.values() if s["workflow_id"]==workflow_id]
+    current_steps=sorted(current_steps,key=lambda x:x["order"])
 
-    global workflow_counter
+    for step in current_steps:
 
-    wid = f"wf_{workflow_counter}"
+        log.append(f"📋 Step : {step['name']}")
+        path.append(step['name'])
 
-    workflows[wid] = {"id": wid, "name": name}
+        step_rules=[r for r in rules.values() if r["step_id"]==step["id"]]
 
-    workflow_counter += 1
+        for r in step_rules:
 
-    return wid
+            condition=r["condition"]
 
+            if "amount" in condition:
 
-def create_step(workflow_id, name, step_type, order):
+                limit=int(condition.split(">")[1])
 
-    global step_counter
+                if data["amount"]>limit:
 
-    sid = f"step_{step_counter}"
+                    log.append("✅ Condition TRUE")
 
-    steps[sid] = {
-        "id": sid,
-        "workflow_id": workflow_id,
-        "name": name,
-        "type": step_type,
-        "order": order
-    }
+                else:
 
-    step_counter += 1
+                    log.append("❌ Condition FALSE")
 
-    return sid
+    log.append("🎉 Workflow Completed")
 
-
-def create_rule(step_id, condition, next_step_id, priority):
-
-    global rule_counter
-
-    rid = f"rule_{rule_counter}"
-
-    rules[rid] = {
-        "step_id": step_id,
-        "condition": condition,
-        "next_step_id": next_step_id,
-        "priority": priority
-    }
-
-    rule_counter += 1
-
-    return rid
-
-
-def execute_workflow(workflow_id, data):
-
-    logs = []
-
-    logs.append("Start Workflow")
-
-    wf_steps = [s for s in steps.values() if s["workflow_id"] == workflow_id]
-
-    wf_steps = sorted(wf_steps, key=lambda x: x["order"])
-
-    if not wf_steps:
-        logs.append("No steps found")
-        return logs
-
-    current_step = wf_steps[0]
-
-    path = []
-
-    while current_step:
-
-        logs.append("Step : " + current_step["name"])
-
-        path.append(current_step["name"])
-
-        step_rules = [r for r in rules.values() if r["step_id"] == current_step["id"]]
-
-        next_step = None
-
-        for rule in step_rules:
-
-            try:
-
-                if eval(rule["condition"], {}, data):
-
-                    logs.append("Condition TRUE")
-
-                    next_step = steps.get(rule["next_step_id"])
-
-                    break
-
-            except:
-
-                logs.append("Condition Error")
-
-        if next_step:
-            current_step = next_step
-        else:
-            break
-
-    logs.append("Workflow Completed")
-
-    execution_history.append({
-        "workflow": workflow_id,
-        "input": data,
-        "path": " → ".join(path)
-    })
-
-    return logs
+    return log,path

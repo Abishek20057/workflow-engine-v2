@@ -1,34 +1,29 @@
 body{
-font-family:"Times New Roman", Times, serif;
+font-family:"Times New Roman",serif;
 background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 color:white;
 margin:0;
-padding:0;
 }
 
 .container{
 width:80%;
 margin:auto;
 padding:20px;
-animation:fadeIn 1s ease-in-out;
-}
-
-h1{
-margin-bottom:20px;
+animation:fade 1s;
 }
 
 .section{
 background:rgba(255,255,255,0.05);
 padding:20px;
-border-radius:10px;
 margin-bottom:20px;
+border-radius:10px;
 }
 
 input,select{
 padding:10px;
 margin:5px;
-border-radius:5px;
 border:none;
+border-radius:5px;
 }
 
 button{
@@ -36,65 +31,25 @@ padding:10px 15px;
 background:#00c6ff;
 border:none;
 border-radius:5px;
-color:white;
 cursor:pointer;
-transition:0.3s;
+color:white;
+transition:.3s;
 }
 
 button:hover{
 transform:scale(1.05);
-box-shadow:0px 4px 10px rgba(0,0,0,0.4);
 }
-
-@keyframes fadeIn{
-0%{
-opacity:0;
-transform:translateY(20px);
-}
-100%{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-/* result animation */
-
-.result-box{
-background:rgba(255,255,255,0.08);
-padding:30px;
-border-radius:10px;
-width:60%;
-margin:auto;
-animation:slideUp 0.8s ease;
-}
-
-@keyframes slideUp{
-0%{
-opacity:0;
-transform:translateY(40px);
-}
-100%{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-.log p{
-margin:8px 0;
-}
-
-/* history table */
 
 table{
 width:80%;
 margin:auto;
 border-collapse:collapse;
-animation:fadeTable 1s ease;
+animation:fade 1s;
 }
 
 th,td{
-padding:12px;
-border-bottom:1px solid rgba(255,255,255,0.2);
+padding:10px;
+border-bottom:1px solid rgba(255,255,255,.2);
 text-align:center;
 }
 
@@ -102,13 +57,7 @@ th{
 background:#00c6ff;
 }
 
-@keyframes fadeTable{
-0%{
-opacity:0;
-transform:scale(0.9);
-}
-100%{
-opacity:1;
-transform:scale(1);
-}
+@keyframes fade{
+0%{opacity:0}
+100%{opacity:1}
 }

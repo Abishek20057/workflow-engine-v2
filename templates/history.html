@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
-<title>Execution History</title>
 
 <link rel="stylesheet" href="/static/style.css">
 
@@ -19,22 +15,18 @@
 <tr>
 
 <th>Workflow</th>
-
 <th>Input</th>
-
 <th>Path</th>
 
 </tr>
 
-{% for item in history %}
+{% for h in history %}
 
 <tr>
 
-<td>{{item.workflow}}</td>
-
-<td>{{item.input}}</td>
-
-<td>{{item.path}}</td>
+<td>{{h.workflow}}</td>
+<td>{{h.input}}</td>
+<td>{{h.path}}</td>
 
 </tr>
 
@@ -43,5 +35,4 @@
 </table>
 
 </body>
-
 </html>

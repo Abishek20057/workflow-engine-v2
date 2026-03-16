@@ -1,65 +1,108 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI,Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
-import engine
-from models import Workflow, Step, Rule, ExecutionInput
+from models import workflows,steps,rules,history
+from engine import execute_engine
 
-app = FastAPI()
+import uuid
 
-templates = Jinja2Templates(directory="templates")
+app=FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+templates=Jinja2Templates(directory="templates")
 
+app.mount("/static",StaticFiles(directory="static"),name="static")
 
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request):
+@app.get("/",response_class=HTMLResponse)
+def home(request:Request):
+
     return templates.TemplateResponse(
         "index.html",
         {
-            "request": request,
-            "workflows": engine.workflows,
-            "steps": engine.steps
-        }
-    )
-
-
-@app.get("/result", response_class=HTMLResponse)
-def result_page(request: Request):
-    return templates.TemplateResponse("result.html", {"request": request})
-
-
-@app.get("/history", response_class=HTMLResponse)
-def history_page(request: Request):
-    return templates.TemplateResponse(
-        "history.html",
-        {
-            "request": request,
-            "history": engine.execution_history
+            "request":request,
+            "workflows":workflows.values(),
+            "steps":steps.values()
         }
     )
 
 
 @app.post("/workflow")
-def create_workflow(w: Workflow):
-    wid = engine.create_workflow(w.name)
-    return {"workflow_id": wid}
+async def create_workflow(name:str):
+
+    wid=str(uuid.uuid4())
+
+    workflows[wid]={
+        "id":wid,
+        "name":name
+    }
+
+    return {"message":"workflow created"}
 
 
 @app.post("/step")
-def create_step(s: Step):
-    sid = engine.create_step(s.workflow_id, s.name, s.step_type, s.order)
-    return {"step_id": sid}
+async def create_step(workflow_id:str,name:str,step_type:str,order:int):
+
+    sid=str(uuid.uuid4())
+
+    steps[sid]={
+        "id":sid,
+        "workflow_id":workflow_id,
+        "name":name,
+        "type":step_type,
+        "order":order
+    }
+
+    return {"message":"step created"}
 
 
 @app.post("/rule")
-def create_rule(r: Rule):
-    rid = engine.create_rule(r.step_id, r.condition, r.next_step_id, r.priority)
-    return {"rule_id": rid}
+async def create_rule(step_id:str,condition:str,next_step_id:str,priority:int):
+
+    rid=str(uuid.uuid4())
+
+    rules[rid]={
+        "id":rid,
+        "step_id":step_id,
+        "condition":condition,
+        "next":next_step_id,
+        "priority":priority
+    }
+
+    return {"message":"rule created"}
 
 
-@app.post("/execute/{workflow_id}")
-def execute(workflow_id: str, data: ExecutionInput):
-    logs = engine.execute_workflow(workflow_id, data.data)
-    return {"logs": logs}
+@app.post("/execute/{workflow_id}",response_class=HTMLResponse)
+async def run_workflow(request:Request,workflow_id:str):
+
+    data=await request.json()
+
+    amount=int(data["amount"])
+
+    log,path=execute_engine(workflow_id,{"amount":amount})
+
+    history.append({
+        "workflow":workflow_id,
+        "input":amount,
+        "path":" → ".join(path)
+    })
+
+    return templates.TemplateResponse(
+        "result.html",
+        {
+            "request":request,
+            "logs":log
+        }
+    )
+
+
+@app.get("/history",response_class=HTMLResponse)
+def show_history(request:Request):
+
+    return templates.TemplateResponse(
+        "history.html",
+        {
+            "request":request,
+            "history":history
+        }
+    )

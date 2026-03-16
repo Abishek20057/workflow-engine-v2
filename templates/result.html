@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
-<title>Workflow Result</title>
 
 <link rel="stylesheet" href="/static/style.css">
 
@@ -12,30 +8,22 @@
 
 <body>
 
-<div class="result-box">
+<div class="container">
 
-<h2>Workflow Result</h2>
+<h1>Workflow Result</h1>
 
-<div class="log">
+<div class="section">
 
-<p>🚀 Workflow Started</p>
+{% for log in logs %}
 
-<p>📋 Step : Manager Approval</p>
+<p>{{log}}</p>
 
-<p>✅ Condition TRUE</p>
-
-<p>💰 Step : Finance Approval</p>
-
-<p>🎉 Workflow Completed</p>
+{% endfor %}
 
 </div>
 
-<br>
-
 <a href="/">
-
 <button>Back</button>
-
 </a>
 
 </div>
