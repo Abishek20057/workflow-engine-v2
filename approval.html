@@ -6,7 +6,7 @@
 
 <title>Workflow Result</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/static/style.css">
 
 </head>
 
@@ -35,11 +35,10 @@ let status=params.get("status")
 let result=document.getElementById("result")
 
 if(status=="approved"){
-result.innerHTML="✅ Expense Approved"
+result.innerHTML="✅ Approved"
 }
-
 else{
-result.innerHTML="⏳ Manager Approval Required"
+result.innerHTML="⏳ Pending Approval"
 }
 
 </script>

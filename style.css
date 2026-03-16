@@ -12,24 +12,31 @@ margin:auto;
 
 .section{
 background:#1f4068;
-padding:20px;
+padding:25px;
 margin-bottom:25px;
 border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.4);
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
 }
 
 input,select{
 padding:10px;
-margin:8px 0;
+margin-top:8px;
+margin-bottom:15px;
 width:100%;
 border:none;
-border-radius:5px;
+border-radius:6px;
 }
 
 button{
 padding:10px 20px;
 background:#00c6ff;
 border:none;
-border-radius:5px;
+border-radius:6px;
 cursor:pointer;
 font-weight:bold;
 }
@@ -39,9 +46,9 @@ button:hover
 #diagram{
 display:flex;
 align-items:center;
-gap:10px;
-flex-wrap:wrap;
+gap:15px;
 margin-top:15px;
+flex-wrap:wrap;
 }
 
 .step-box{
@@ -62,20 +69,6 @@ color:white;
 font-size:22px;
 }
 
-@keyframes pop{
-
-0%{
-transform:scale(0);
-opacity:0;
-}
-
-100%{
-transform:scale(1);
-opacity:1;
-}
-
-}
-
 .center{
 display:flex;
 justify-content:center;
@@ -88,4 +81,18 @@ background:#1f4068;
 padding:40px;
 border-radius:10px;
 text-align:center;
+}
+
+@keyframes pop{
+
+0%{
+transform:scale(0);
+opacity:0;
+}
+
+100%{
+transform:scale(1);
+opacity:1;
+}
+
 }

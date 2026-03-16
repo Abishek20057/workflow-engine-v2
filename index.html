@@ -6,7 +6,7 @@
 
 <title>Workflow Automation Engine</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/static/style.css">
 
 </head>
 
@@ -20,7 +20,7 @@
 
 <h3>How To Use</h3>
 
-<p>1️⃣ Create Workflow</p>
+<p>1️⃣ Select Workflow Type</p>
 <p>2️⃣ Add Steps</p>
 <p>3️⃣ Define Rules</p>
 <p>4️⃣ Execute Workflow</p>
@@ -31,9 +31,18 @@
 
 <h2>Create Workflow</h2>
 
-<label>Workflow Name</label>
+<label>Select Workflow Type</label>
 
-<input id="wf_name" placeholder="Example: Expense Approval">
+<select id="wf_name">
+
+<option value="Expense Approval">Expense Approval</option>
+<option value="Leave Approval">Leave Approval</option>
+<option value="Recruitment Process">Recruitment Process</option>
+<option value="Purchase Request">Purchase Request</option>
+<option value="Bug Approval">Bug Approval</option>
+<option value="HR Onboarding">HR Onboarding</option>
+
+</select>
 
 <button onclick="createWorkflow()">Create Workflow</button>
 
@@ -92,16 +101,20 @@
 <label>Condition</label>
 
 <select id="condition_field">
+
 <option value="amount">amount</option>
+
 </select>
 
 <select id="condition_operator">
+
 <option value=">">></option>
 <option value="<"><</option>
 <option value="==">==</option>
+
 </select>
 
-<input id="condition_value" placeholder="1000">
+<input id="condition_value" placeholder="Example: 1000">
 
 <label>Next Step ID</label>
 
