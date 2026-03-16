@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 app = FastAPI()
 
-# -------------------------------
-# Data Storage (Temporary Memory)
-# -------------------------------
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 workflows = {}
 steps = {}
@@ -15,10 +14,6 @@ rules = {}
 workflow_counter = 1
 step_counter = 1
 
-
-# -------------------------------
-# Models
-# -------------------------------
 
 class Workflow(BaseModel):
     name: str
@@ -40,32 +35,19 @@ class Execution(BaseModel):
     data: dict
 
 
-# -------------------------------
-# Home Page
-# -------------------------------
-
 @app.get("/", response_class=HTMLResponse)
 def home():
-    with open("index.html") as f:
+    with open("templates/index.html") as f:
         return f.read()
 
-
-# -------------------------------
-# List Workflows
-# -------------------------------
 
 @app.get("/workflows")
 def list_workflows():
     return [{"id": i, "name": w["name"]} for i, w in workflows.items()]
 
 
-# -------------------------------
-# Create Workflow
-# -------------------------------
-
 @app.post("/workflows")
 def create_workflow(workflow: Workflow):
-
     global workflow_counter
 
     workflows[workflow_counter] = {
@@ -77,10 +59,6 @@ def create_workflow(workflow: Workflow):
 
     return {"message": "Workflow created"}
 
-
-# -------------------------------
-# Add Step
-# -------------------------------
 
 @app.post("/workflows/{workflow_id}/steps")
 def add_step(workflow_id: int, step: Step):
@@ -103,10 +81,6 @@ def add_step(workflow_id: int, step: Step):
     return {"message": "Step added"}
 
 
-# -------------------------------
-# Add Rule
-# -------------------------------
-
 @app.post("/steps/{step_id}/rules")
 def add_rule(step_id: int, rule: Rule):
 
@@ -120,10 +94,6 @@ def add_rule(step_id: int, rule: Rule):
 
     return {"message": "Rule added"}
 
-
-# -------------------------------
-# Execute Workflow
-# -------------------------------
 
 @app.post("/workflows/{workflow_id}/execute")
 def execute_workflow(workflow_id: int, execution: Execution):
@@ -150,13 +120,13 @@ def execute_workflow(workflow_id: int, execution: Execution):
 
             if "amount" in condition:
 
-                condition_value = int(condition.split(">")[1])
+                value = int(condition.split(">")[1])
 
-                if amount > condition_value:
+                if amount > value:
                     next_step = rule["next_step_id"]
 
         if next_step is None:
-            logs.append("Expense Approved")
+            logs.append("Approved")
             break
 
         current_step = next_step
