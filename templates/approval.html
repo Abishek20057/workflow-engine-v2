@@ -4,7 +4,6 @@
 <head>
 
 <title>Workflow Result</title>
-
 <link rel="stylesheet" href="/static/style.css">
 
 </head>
@@ -24,24 +23,20 @@
 <script>
 
 function home(){
-
 window.location="/"
-
 }
 
-let params = new URLSearchParams(window.location.search)
+let params=new URLSearchParams(window.location.search)
 
-let status = params.get("status")
+let status=params.get("status")
 
 let box=document.getElementById("status")
 
 if(status=="approved"){
 
-box.innerHTML="✅ CEO Approved 🎉"
+box.innerHTML="🎉 CEO Approved ✅"
 
-}
-
-else{
+}else{
 
 box.innerHTML="⏳ Manager Approval Required"
 
@@ -50,5 +45,4 @@ box.innerHTML="⏳ Manager Approval Required"
 </script>
 
 </body>
-
 </html>

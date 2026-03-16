@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -8,9 +8,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 workflows = {}
 steps = {}
+rules = {}
 
 workflow_id = 1
 step_id = 1
+rule_id = 1
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -32,6 +34,7 @@ def get_workflows():
 
 @app.post("/workflows")
 def create_workflow(data: dict):
+
     global workflow_id
 
     workflows[workflow_id] = {
@@ -46,6 +49,7 @@ def create_workflow(data: dict):
 
 @app.post("/workflows/{wf_id}/steps")
 def add_step(wf_id: int, data: dict):
+
     global step_id
 
     steps[step_id] = {
@@ -59,14 +63,28 @@ def add_step(wf_id: int, data: dict):
     return {"message": "step added"}
 
 
+@app.post("/steps/{step_id}/rules")
+def add_rule(step_id: int, data: dict):
+
+    global rule_id
+
+    rules[rule_id] = {
+        "id": rule_id,
+        "step": step_id,
+        "condition": data["condition"]
+    }
+
+    rule_id += 1
+
+    return {"message": "rule added"}
+
+
 @app.post("/execute")
 def execute(data: dict):
 
     amount = data["amount"]
 
     if amount > 1000:
-        status = "approved"
+        return {"status": "approved"}
     else:
-        status = "manager"
-
-    return {"status": status}
+        return {"status": "manager"}

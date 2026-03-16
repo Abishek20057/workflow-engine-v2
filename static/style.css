@@ -8,10 +8,8 @@ padding:40px;
 }
 
 .container{
-
 max-width:900px;
 margin:auto;
-
 }
 
 .section{
@@ -57,20 +55,18 @@ flex-wrap:wrap;
 
 }
 
-.start{
+.node{
 
-background:green;
-padding:10px;
+background:#00c6ff;
+padding:10px 20px;
 border-radius:8px;
+animation:pop 0.4s;
 
 }
 
-.step{
+.start{
 
-background:#00c6ff;
-padding:10px;
-border-radius:8px;
-animation:pop 0.4s;
+background:green;
 
 }
 
