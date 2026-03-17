@@ -3,102 +3,86 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from models import workflows, steps, rules, history
-from engine import run_engine
-
 app = FastAPI()
 
-# ===================== STATIC + TEMPLATE =====================
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# ================= DATA =================
+workflows = {}
+steps = {}
+rules = {}
+history = []
 
-# ===================== HOME =====================
-@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
+# ================= HOME =================
+@app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-
-# ===================== CREATE WORKFLOW =====================
+# ================= CREATE WORKFLOW =================
 @app.post("/workflow")
 def create_workflow(name: str):
-    workflow_id = f"wf_{len(workflows) + 1}"
+    wf_id = f"wf_{len(workflows)+1}"
+    workflows[wf_id] = {"id": wf_id, "name": name}
+    steps[wf_id] = []
+    rules[wf_id] = []
+    return {"message": "created"}
 
-    workflows[workflow_id] = {
-        "id": workflow_id,
-        "name": name
-    }
-
-    return {"id": workflow_id}
-
-
-# ===================== GET WORKFLOWS =====================
+# ================= GET WORKFLOWS =================
 @app.get("/get_workflows")
 def get_workflows():
     return list(workflows.values())
 
-
-# ===================== ADD STEP =====================
+# ================= ADD STEP =================
 @app.post("/step")
-def add_step(workflow_id: str, name: str, step_type: str, order: int):
-
-    step_id = f"step_{len(steps) + 1}"
-
-    steps[step_id] = {
-        "id": step_id,
-        "workflow_id": workflow_id,
+def add_step(wf_id: str, name: str, order: int):
+    steps[wf_id].append({
         "name": name,
-        "type": step_type,
         "order": order
-    }
+    })
+    steps[wf_id] = sorted(steps[wf_id], key=lambda x: x["order"])
+    return {"message": "step added"}
 
-    return {"id": step_id}
-
-
-# ===================== GET STEPS =====================
-@app.get("/get_steps/{workflow_id}")
-def get_steps(workflow_id: str):
-    return [
-        s for s in steps.values()
-        if s["workflow_id"] == workflow_id
-    ]
-
-
-# ===================== ADD RULE =====================
+# ================= ADD RULE =================
 @app.post("/rule")
-def add_rule(step_id: str, condition: str, next_step_id: str, priority: int):
-
-    rule_id = f"rule_{len(rules) + 1}"
-
-    rules[rule_id] = {
-        "id": rule_id,
-        "step_id": step_id,
+def add_rule(wf_id: str, condition: str, next_step: int):
+    rules[wf_id].append({
         "condition": condition,
-        "next_step_id": next_step_id,
-        "priority": priority
-    }
+        "next_step": next_step
+    })
+    return {"message": "rule added"}
 
-    return {"id": rule_id}
+# ================= EXECUTE =================
+@app.get("/execute/{wf_id}", response_class=HTMLResponse)
+def execute(wf_id: str, amount: int = 0, country: str = "", request: Request = None):
 
+    wf_steps = steps.get(wf_id, [])
+    wf_rules = rules.get(wf_id, [])
 
-# ===================== GET RULES =====================
-@app.get("/get_rules/{step_id}")
-def get_rules(step_id: str):
-    return [
-        r for r in rules.values()
-        if r["step_id"] == step_id
-    ]
+    path = []
+    current_index = 0
 
+    while current_index < len(wf_steps):
+        step = wf_steps[current_index]
+        path.append(step["name"])
 
-# ===================== EXECUTE WORKFLOW =====================
-@app.api_route("/execute/{workflow_id}", methods=["GET", "POST"], response_class=HTMLResponse)
-def execute(request: Request, workflow_id: str, amount: int = 0, country: str = "IN"):
+        moved = False
 
-    logs, path = run_engine(workflow_id, amount)
+        for rule in wf_rules:
+            try:
+                if eval(rule["condition"]):
+                    current_index = rule["next_step"]
+                    moved = True
+                    break
+            except:
+                pass
 
-    # SAVE HISTORY
+        if not moved:
+            current_index += 1
+
+    # Save history
     history.append({
-        "workflow": workflow_id,
+        "wf": wf_id,
         "amount": amount,
         "country": country,
         "path": " → ".join(path)
@@ -106,12 +90,10 @@ def execute(request: Request, workflow_id: str, amount: int = 0, country: str = 
 
     return templates.TemplateResponse("result.html", {
         "request": request,
-        "logs": logs,
-        "country": country
+        "path": path
     })
 
-
-# ===================== HISTORY =====================
+# ================= HISTORY =================
 @app.get("/history", response_class=HTMLResponse)
 def view_history(request: Request):
     return templates.TemplateResponse("history.html", {
