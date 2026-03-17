@@ -8,7 +8,7 @@ from engine import run_engine
 
 app = FastAPI()
 
-# Static & Templates
+# ===================== STATIC + TEMPLATE =====================
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -22,7 +22,7 @@ def home(request: Request):
 # ===================== CREATE WORKFLOW =====================
 @app.post("/workflow")
 def create_workflow(name: str):
-    workflow_id = f"wf_{len(workflows)+1}"
+    workflow_id = f"wf_{len(workflows) + 1}"
 
     workflows[workflow_id] = {
         "id": workflow_id,
@@ -32,7 +32,7 @@ def create_workflow(name: str):
     return {"id": workflow_id}
 
 
-# ===================== GET WORKFLOWS (FOR UI) =====================
+# ===================== GET WORKFLOWS =====================
 @app.get("/get_workflows")
 def get_workflows():
     return list(workflows.values())
@@ -42,7 +42,7 @@ def get_workflows():
 @app.post("/step")
 def add_step(workflow_id: str, name: str, step_type: str, order: int):
 
-    step_id = f"step_{len(steps)+1}"
+    step_id = f"step_{len(steps) + 1}"
 
     steps[step_id] = {
         "id": step_id,
@@ -55,11 +55,20 @@ def add_step(workflow_id: str, name: str, step_type: str, order: int):
     return {"id": step_id}
 
 
+# ===================== GET STEPS =====================
+@app.get("/get_steps/{workflow_id}")
+def get_steps(workflow_id: str):
+    return [
+        s for s in steps.values()
+        if s["workflow_id"] == workflow_id
+    ]
+
+
 # ===================== ADD RULE =====================
 @app.post("/rule")
 def add_rule(step_id: str, condition: str, next_step_id: str, priority: int):
 
-    rule_id = f"rule_{len(rules)+1}"
+    rule_id = f"rule_{len(rules) + 1}"
 
     rules[rule_id] = {
         "id": rule_id,
@@ -72,22 +81,33 @@ def add_rule(step_id: str, condition: str, next_step_id: str, priority: int):
     return {"id": rule_id}
 
 
+# ===================== GET RULES =====================
+@app.get("/get_rules/{step_id}")
+def get_rules(step_id: str):
+    return [
+        r for r in rules.values()
+        if r["step_id"] == step_id
+    ]
+
+
 # ===================== EXECUTE WORKFLOW =====================
-@app.post("/execute/{workflow_id}", response_class=HTMLResponse)
-def execute(request: Request, workflow_id: str, amount: int):
+@app.api_route("/execute/{workflow_id}", methods=["GET", "POST"], response_class=HTMLResponse)
+def execute(request: Request, workflow_id: str, amount: int = 0, country: str = "IN"):
 
     logs, path = run_engine(workflow_id, amount)
 
-    # Save history
+    # SAVE HISTORY
     history.append({
         "workflow": workflow_id,
         "amount": amount,
+        "country": country,
         "path": " → ".join(path)
     })
 
     return templates.TemplateResponse("result.html", {
         "request": request,
-        "logs": logs
+        "logs": logs,
+        "country": country
     })
 
 

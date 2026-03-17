@@ -1,61 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Workflow System</title>
-<link rel="stylesheet" href="/static/style.css">
+    <title>Workflow Automation System</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
 
 <h1>Workflow Automation System</h1>
 
-<div class="navbar">
-<button>Workflows</button>
-<button>Dashboard</button>
-<button>Settings</button>
-<button>Logout</button>
+<!-- NAV -->
+<div class="nav">
+    <button>Workflows</button>
+    <button>Dashboard</button>
+    <button>Settings</button>
 </div>
 
-<div class="card">
-
+<!-- WORKFLOW LIST -->
 <h2>Workflow List</h2>
+<input type="text" placeholder="Search workflows...">
 
-<input placeholder="Search workflows..." class="input">
-
-<table>
-<tr>
-<th>Name</th>
-<th>Action</th>
-</tr>
-
-<tbody id="workflow_list"></tbody>
-
+<table id="workflowTable">
+    <tr>
+        <th>Name</th>
+        <th>Action</th>
+    </tr>
 </table>
 
-</div>
+<hr>
 
-
-<div class="card">
-
+<!-- CREATE WORKFLOW -->
 <h2>Create Workflow</h2>
-
-<input id="wf_name" placeholder="Workflow Name" class="input">
-
+<input id="wfName" placeholder="Workflow Name">
 <button onclick="createWorkflow()">Create</button>
 
-</div>
+<hr>
 
+<!-- ADD STEP -->
+<h2>Add Step</h2>
+<select id="wfSelect"></select>
+<input id="stepName" placeholder="Step Name">
 
-<div class="card">
+<select id="stepType">
+    <option value="approval">Approval</option>
+    <option value="task">Task</option>
+    <option value="notification">Notification</option>
+</select>
 
+<input id="stepOrder" placeholder="Order">
+<button onclick="addStep()">Add Step</button>
+
+<hr>
+
+<!-- ADD RULE -->
+<h2>Add Rule</h2>
+<input id="ruleStep" placeholder="Step ID">
+<input id="condition" placeholder="Condition (amount > 1000)">
+<input id="nextStep" placeholder="Next Step ID">
+<input id="priority" placeholder="Priority">
+
+<button onclick="addRule()">Add Rule</button>
+
+<hr>
+
+<!-- EXECUTE -->
 <h2>Start Workflow</h2>
 
-<input id="exec_wf" placeholder="Workflow ID" class="input">
-<input id="amount" placeholder="Amount" class="input">
+<select id="execWorkflow"></select>
+<input id="amount" placeholder="Amount">
+<input id="country" placeholder="Country">
 
 <button onclick="runWorkflow()">Start</button>
-
-</div>
 
 <script src="/static/script.js"></script>
 
