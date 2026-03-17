@@ -1,33 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <link rel="stylesheet" href="/static/style.css">
-
 </head>
 
 <body>
 
-<div class="container">
-
 <h1>Workflow Result</h1>
 
-<div class="section">
-
+<div>
 {% for log in logs %}
-
-<p>{{log}}</p>
-
+<p>{{ log }}</p>
 {% endfor %}
-
 </div>
 
-<a href="/">
-<button>Back</button>
-</a>
-
-</div>
+<a href="/">Back</a>
 
 </body>
-
 </html>

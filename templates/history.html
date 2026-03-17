@@ -1,38 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <link rel="stylesheet" href="/static/style.css">
-
 </head>
 
 <body>
 
-<h1 style="text-align:center">Execution History</h1>
+<h1>Execution History</h1>
 
-<table>
-
+<table border="1">
 <tr>
-
 <th>Workflow</th>
-<th>Input</th>
+<th>Amount</th>
 <th>Path</th>
-
 </tr>
 
 {% for h in history %}
-
 <tr>
-
-<td>{{h.workflow}}</td>
-<td>{{h.input}}</td>
-<td>{{h.path}}</td>
-
+<td>{{ h.workflow }}</td>
+<td>{{ h.amount }}</td>
+<td>{{ h.path }}</td>
 </tr>
-
 {% endfor %}
 
 </table>
+
+<a href="/">Back</a>
 
 </body>
 </html>
