@@ -24,8 +24,18 @@ def home(request: Request):
 def create_workflow(name: str):
     wf_id = f"wf_{len(workflows)+1}"
     workflows[wf_id] = {"id": wf_id, "name": name}
-    steps[wf_id] = []
-    rules[wf_id] = []
+
+    # default steps (IMPORTANT for demo)
+    steps[wf_id] = [
+        {"name": "Manager Approval", "order": 1},
+        {"name": "Finance Approval", "order": 2},
+        {"name": "Final Approval", "order": 3}
+    ]
+
+    rules[wf_id] = [
+        {"condition": "amount > 1000", "next_step": 2}
+    ]
+
     return {"msg": "created"}
 
 # ===== GET WORKFLOWS =====
@@ -33,23 +43,7 @@ def create_workflow(name: str):
 def get_workflows():
     return list(workflows.values())
 
-# ===== ADD STEP =====
-@app.post("/step")
-def add_step(wf_id: str, name: str, order: int):
-    steps[wf_id].append({"name": name, "order": order})
-    steps[wf_id] = sorted(steps[wf_id], key=lambda x: x["order"])
-    return {"msg": "step added"}
-
-# ===== ADD RULE =====
-@app.post("/rule")
-def add_rule(wf_id: str, condition: str, next_step: int):
-    rules[wf_id].append({
-        "condition": condition,
-        "next_step": next_step
-    })
-    return {"msg": "rule added"}
-
-# ===== GET STEPS (FOR DIAGRAM) =====
+# ===== GET STEPS =====
 @app.get("/get_steps/{wf_id}")
 def get_steps(wf_id: str):
     return steps.get(wf_id, [])

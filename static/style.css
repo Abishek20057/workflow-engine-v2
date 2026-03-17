@@ -4,17 +4,12 @@ body {
     padding: 20px;
 }
 
-h1 {
-    color: #2c3e50;
-}
-
 .nav button {
-    padding: 10px;
     margin: 5px;
-    background: #27ae60;
+    padding: 10px;
+    background: green;
     color: white;
     border: none;
-    cursor: pointer;
 }
 
 .hidden {
@@ -24,46 +19,29 @@ h1 {
 table {
     width: 100%;
     margin-top: 10px;
-    border-collapse: collapse;
 }
 
-td, th {
-    padding: 10px;
-    border: 1px solid #ccc;
-}
-
-/* ===== WORKFLOW DIAGRAM ===== */
 .workflow-container {
     margin-top: 30px;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 .node {
-    padding: 12px 20px;
-    border-radius: 8px;
-    background: #3498db;
+    padding: 10px;
+    background: blue;
     color: white;
-    font-weight: bold;
+    border-radius: 6px;
 }
 
 .node.start {
-    background: #2ecc71;
+    background: green;
 }
 
 .node.active {
-    background: #e74c3c;
-    animation: pulse 1s infinite;
+    background: red;
 }
 
 .arrow {
-    margin: 0 10px;
-    font-size: 20px;
-}
-
-@keyframes pulse {
-    0% {transform: scale(1);}
-    50% {transform: scale(1.1);}
-    100% {transform: scale(1);}
+    margin: 10px;
 }

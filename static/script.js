@@ -17,7 +17,9 @@ async function loadWorkflows() {
         table.innerHTML += `
         <tr>
             <td>${w.name}</td>
-            <td><button onclick="startWorkflow('${w.id}')">Start</button></td>
+            <td>
+                <button onclick="startWorkflow('${w.id}')">Start</button>
+            </td>
         </tr>`;
 
         exec.innerHTML += `<option value="${w.id}">${w.name}</option>`;
@@ -28,7 +30,7 @@ function startWorkflow(id) {
     showTab('start');
     document.getElementById("execWorkflow").value = id;
 
-    loadDiagram(id);   // 🔥 IMPORTANT
+    loadDiagram(id);
 }
 
 function showTab(tab) {
@@ -42,6 +44,12 @@ function viewHistory() {
 
 async function createWorkflow() {
     let name = document.getElementById("wfName").value;
+
+    if (!name) {
+        alert("Enter workflow name");
+        return;
+    }
+
     await fetch("/workflow?name=" + name, {method: "POST"});
     loadWorkflows();
 }
@@ -50,6 +58,11 @@ function runWorkflow() {
     let wf = document.getElementById("execWorkflow").value;
     let amount = document.getElementById("amount").value;
     let country = document.getElementById("country").value;
+
+    if (!wf) {
+        alert("Select workflow!");
+        return;
+    }
 
     window.location = `/execute/${wf}?amount=${amount}&country=${country}`;
 }
