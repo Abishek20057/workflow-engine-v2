@@ -8,7 +8,7 @@
 
 <h1>Workflow Automation System</h1>
 
-<div class="tabs">
+<div class="nav">
     <button onclick="showTab('list')">Workflows</button>
     <button onclick="showTab('create')">Create</button>
     <button onclick="showTab('start')">Start</button>
@@ -18,14 +18,23 @@
 <!-- WORKFLOW LIST -->
 <div id="list" class="tab">
     <h2>Workflow List</h2>
-    <table id="workflowTable"></table>
+
+    <input placeholder="Search workflows...">
+
+    <table id="workflowTable">
+        <tr>
+            <th>Workflow Name</th>
+            <th>Action</th>
+        </tr>
+    </table>
 </div>
 
 <!-- CREATE -->
 <div id="create" class="tab hidden">
     <h2>Create Workflow</h2>
+
     <input id="wfName" placeholder="Workflow Name">
-    <button onclick="createWorkflow()">Create</button>
+    <button onclick="createWorkflow()">Create Workflow</button>
 </div>
 
 <!-- START -->
@@ -36,9 +45,9 @@
     <input id="amount" placeholder="Amount">
     <input id="country" placeholder="Country">
 
-    <button onclick="runWorkflow()">Start</button>
+    <button onclick="runWorkflow()">Start Workflow</button>
 
-    <!-- DIAGRAM -->
+    <!-- VISUAL FLOW -->
     <div class="diagram">
         <div class="node start">Start</div>
         <div class="arrow">→</div>
