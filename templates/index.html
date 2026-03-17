@@ -8,27 +8,18 @@
 
 <h1>Workflow Automation System</h1>
 
-<!-- NAV -->
 <div class="nav">
-    <button>Workflows</button>
-    <button>Dashboard</button>
-    <button>Settings</button>
+    <button onclick="goHome()">Workflows</button>
+    <button onclick="viewHistory()">History</button>
 </div>
 
 <!-- WORKFLOW LIST -->
 <h2>Workflow List</h2>
-<input type="text" placeholder="Search workflows...">
-
-<table id="workflowTable">
-    <tr>
-        <th>Name</th>
-        <th>Action</th>
-    </tr>
-</table>
+<table id="workflowTable"></table>
 
 <hr>
 
-<!-- CREATE WORKFLOW -->
+<!-- CREATE -->
 <h2>Create Workflow</h2>
 <input id="wfName" placeholder="Workflow Name">
 <button onclick="createWorkflow()">Create</button>
@@ -39,13 +30,11 @@
 <h2>Add Step</h2>
 <select id="wfSelect"></select>
 <input id="stepName" placeholder="Step Name">
-
 <select id="stepType">
     <option value="approval">Approval</option>
     <option value="task">Task</option>
     <option value="notification">Notification</option>
 </select>
-
 <input id="stepOrder" placeholder="Order">
 <button onclick="addStep()">Add Step</button>
 
@@ -57,18 +46,15 @@
 <input id="condition" placeholder="Condition (amount > 1000)">
 <input id="nextStep" placeholder="Next Step ID">
 <input id="priority" placeholder="Priority">
-
 <button onclick="addRule()">Add Rule</button>
 
 <hr>
 
 <!-- EXECUTE -->
 <h2>Start Workflow</h2>
-
 <select id="execWorkflow"></select>
 <input id="amount" placeholder="Amount">
 <input id="country" placeholder="Country">
-
 <button onclick="runWorkflow()">Start</button>
 
 <script src="/static/script.js"></script>

@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/static/style.css">
+    <title>Result</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
 
 <h1>Workflow Result</h1>
 
-<div>
-{% for log in logs %}
-<p>{{ log }}</p>
-{% endfor %}
+<div class="result-box">
+
+    <p class="start"> Workflow Started</p>
+
+    {% for log in logs %}
+        <p class="step">➡ {{ log }}</p>
+    {% endfor %}
+
+    <p class="done">Workflow Completed</p>
+
 </div>
 
+<br>
 <a href="/">Back</a>
 
 </body>

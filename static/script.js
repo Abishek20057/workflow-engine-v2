@@ -1,3 +1,11 @@
+function goHome() {
+    window.location = "/";
+}
+
+function viewHistory() {
+    window.location = "/history";
+}
+
 // LOAD WORKFLOWS
 async function loadWorkflows() {
     let res = await fetch("/get_workflows");
@@ -7,7 +15,7 @@ async function loadWorkflows() {
     let select = document.getElementById("wfSelect");
     let exec = document.getElementById("execWorkflow");
 
-    table.innerHTML = `<tr><th>Name</th><th>Action</th></tr>`;
+    table.innerHTML = "<tr><th>Name</th><th>Action</th></tr>";
     select.innerHTML = "";
     exec.innerHTML = "";
 
@@ -26,12 +34,11 @@ async function loadWorkflows() {
 // CREATE
 async function createWorkflow() {
     let name = document.getElementById("wfName").value;
-
     await fetch("/workflow?name=" + name, {method: "POST"});
     loadWorkflows();
 }
 
-// ADD STEP
+// STEP
 async function addStep() {
     let wf = document.getElementById("wfSelect").value;
     let name = document.getElementById("stepName").value;
@@ -45,7 +52,7 @@ async function addStep() {
     alert("Step Added");
 }
 
-// ADD RULE
+// RULE
 async function addRule() {
     let step = document.getElementById("ruleStep").value;
     let condition = document.getElementById("condition").value;
