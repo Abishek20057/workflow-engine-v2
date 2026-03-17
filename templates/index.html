@@ -1,44 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Workflow Engine</title>
+<title>Workflow System</title>
 <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
-<h1>Workflow Automation Engine</h1>
+<h1>Workflow Automation System</h1>
 
-<a href="/history"><button>View History</button></a>
+<div class="navbar">
+<button>Workflows</button>
+<button>Dashboard</button>
+<button>Settings</button>
+<button>Logout</button>
+</div>
+
+<div class="card">
+
+<h2>Workflow List</h2>
+
+<input placeholder="Search workflows..." class="input">
+
+<table>
+<tr>
+<th>Name</th>
+<th>Action</th>
+</tr>
+
+<tbody id="workflow_list"></tbody>
+
+</table>
+
+</div>
+
+
+<div class="card">
 
 <h2>Create Workflow</h2>
-<input id="wf_name" placeholder="Workflow Name">
+
+<input id="wf_name" placeholder="Workflow Name" class="input">
+
 <button onclick="createWorkflow()">Create</button>
 
-<h2>Add Step</h2>
-<input id="wf_id" placeholder="Workflow ID">
-<input id="step_name" placeholder="Step Name">
+</div>
 
-<select id="step_type">
-<option value="approval">Approval</option>
-<option value="task">Task</option>
-<option value="notification">Notification</option>
-</select>
 
-<input id="order" placeholder="Order">
-<button onclick="addStep()">Add Step</button>
+<div class="card">
 
-<h2>Add Rule</h2>
-<input id="step_id" placeholder="Step ID">
-<input id="condition" placeholder="amount > 1000">
-<input id="next_step" placeholder="Next Step ID">
-<input id="priority" placeholder="Priority">
-<button onclick="addRule()">Add Rule</button>
+<h2>Start Workflow</h2>
 
-<h2>Execute Workflow</h2>
-<input id="exec_wf" placeholder="Workflow ID">
-<input id="amount" placeholder="Amount">
-<button onclick="runWorkflow()">Run</button>
+<input id="exec_wf" placeholder="Workflow ID" class="input">
+<input id="amount" placeholder="Amount" class="input">
+
+<button onclick="runWorkflow()">Start</button>
+
+</div>
 
 <script src="/static/script.js"></script>
 
