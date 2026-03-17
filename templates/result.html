@@ -1,27 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Result</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-
 <h1>Workflow Result</h1>
 
-<div class="result-box">
+<ul>
+{% for step in path %}
+    <li>✔ {{ step }}</li>
+{% endfor %}
+</ul>
 
-    <p class="start"> Workflow Started</p>
+<h3 style="color:green;">Workflow Completed</h3>
 
-    {% for log in logs %}
-        <p class="step">➡ {{ log }}</p>
-    {% endfor %}
-
-    <p class="done">Workflow Completed</p>
-
-</div>
-
-<br>
 <a href="/">Back</a>
-
-</body>
-</html>

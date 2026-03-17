@@ -7,7 +7,7 @@ async function loadWorkflows() {
 
     table.innerHTML = `
     <tr>
-        <th>Workflow Name</th>
+        <th>Name</th>
         <th>Action</th>
     </tr>`;
 
@@ -17,9 +17,7 @@ async function loadWorkflows() {
         table.innerHTML += `
         <tr>
             <td>${w.name}</td>
-            <td>
-                <button onclick="startWorkflow('${w.id}')">Start</button>
-            </td>
+            <td><button onclick="startWorkflow('${w.id}')">Start</button></td>
         </tr>`;
 
         exec.innerHTML += `<option value="${w.id}">${w.name}</option>`;
@@ -29,6 +27,8 @@ async function loadWorkflows() {
 function startWorkflow(id) {
     showTab('start');
     document.getElementById("execWorkflow").value = id;
+
+    loadDiagram(id);   // 🔥 IMPORTANT
 }
 
 function showTab(tab) {
@@ -42,7 +42,6 @@ function viewHistory() {
 
 async function createWorkflow() {
     let name = document.getElementById("wfName").value;
-
     await fetch("/workflow?name=" + name, {method: "POST"});
     loadWorkflows();
 }
@@ -53,6 +52,25 @@ function runWorkflow() {
     let country = document.getElementById("country").value;
 
     window.location = `/execute/${wf}?amount=${amount}&country=${country}`;
+}
+
+async function loadDiagram(wf_id) {
+    let res = await fetch(`/get_steps/${wf_id}`);
+    let data = await res.json();
+
+    let diagram = document.getElementById("diagram");
+    diagram.innerHTML = "";
+
+    diagram.innerHTML += `<div class="node start">Start</div>`;
+
+    data.forEach((step, index) => {
+        diagram.innerHTML += `<div class="arrow">→</div>`;
+
+        let cls = "node";
+        if (index === 0) cls += " active";
+
+        diagram.innerHTML += `<div class="${cls}">${step.name}</div>`;
+    });
 }
 
 loadWorkflows();

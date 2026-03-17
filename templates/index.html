@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Workflow System</title>
+    <title>Workflow Engine</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -18,23 +18,14 @@
 <!-- WORKFLOW LIST -->
 <div id="list" class="tab">
     <h2>Workflow List</h2>
-
-    <input placeholder="Search workflows...">
-
-    <table id="workflowTable">
-        <tr>
-            <th>Workflow Name</th>
-            <th>Action</th>
-        </tr>
-    </table>
+    <table id="workflowTable"></table>
 </div>
 
 <!-- CREATE -->
 <div id="create" class="tab hidden">
     <h2>Create Workflow</h2>
-
     <input id="wfName" placeholder="Workflow Name">
-    <button onclick="createWorkflow()">Create Workflow</button>
+    <button onclick="createWorkflow()">Create</button>
 </div>
 
 <!-- START -->
@@ -44,20 +35,9 @@
     <select id="execWorkflow"></select>
     <input id="amount" placeholder="Amount">
     <input id="country" placeholder="Country">
-
     <button onclick="runWorkflow()">Start Workflow</button>
 
-    <!-- VISUAL FLOW -->
-    <div class="diagram">
-        <div class="node start">Start</div>
-        <div class="arrow">→</div>
-        <div class="node">Manager Approval</div>
-        <div class="arrow">→</div>
-        <div class="node">Condition</div>
-        <div class="arrow">→</div>
-        <div class="node">Finance Approval</div>
-    </div>
-
+    <div id="diagram" class="workflow-container"></div>
 </div>
 
 <script src="/static/script.js"></script>

@@ -1,24 +1,20 @@
 body {
-    font-family: "Times New Roman";
-    background: #f1f5f9;
+    font-family: Arial;
+    background: #f4f6f9;
     padding: 20px;
 }
 
 h1 {
-    color: #1e3a8a;
+    color: #2c3e50;
 }
 
-.tabs button {
-    background: #2563eb;
+.nav button {
+    padding: 10px;
+    margin: 5px;
+    background: #27ae60;
     color: white;
     border: none;
-    padding: 10px;
-    margin-right: 10px;
     cursor: pointer;
-}
-
-.tab {
-    margin-top: 20px;
 }
 
 .hidden {
@@ -27,41 +23,47 @@ h1 {
 
 table {
     width: 100%;
-    background: white;
+    margin-top: 10px;
     border-collapse: collapse;
 }
 
 td, th {
-    border: 1px solid #ccc;
     padding: 10px;
+    border: 1px solid #ccc;
 }
 
-button {
-    background: #22c55e;
-    color: white;
-    border: none;
-    padding: 8px;
-}
-
-/* DIAGRAM */
-.diagram {
+/* ===== WORKFLOW DIAGRAM ===== */
+.workflow-container {
     margin-top: 30px;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .node {
-    background: #3b82f6;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: #3498db;
     color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
+    font-weight: bold;
 }
 
-.start {
-    background: green;
+.node.start {
+    background: #2ecc71;
+}
+
+.node.active {
+    background: #e74c3c;
+    animation: pulse 1s infinite;
 }
 
 .arrow {
     margin: 0 10px;
     font-size: 20px;
+}
+
+@keyframes pulse {
+    0% {transform: scale(1);}
+    50% {transform: scale(1.1);}
+    100% {transform: scale(1);}
 }
