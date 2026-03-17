@@ -1,61 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Workflow Automation System</title>
+    <title>Workflow System</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
 <h1>Workflow Automation System</h1>
 
-<div class="nav">
-    <button onclick="goHome()">Workflows</button>
+<div class="tabs">
+    <button onclick="showTab('list')">Workflows</button>
+    <button onclick="showTab('create')">Create</button>
+    <button onclick="showTab('start')">Start</button>
     <button onclick="viewHistory()">History</button>
 </div>
 
 <!-- WORKFLOW LIST -->
-<h2>Workflow List</h2>
-<table id="workflowTable"></table>
-
-<hr>
+<div id="list" class="tab">
+    <h2>Workflow List</h2>
+    <table id="workflowTable"></table>
+</div>
 
 <!-- CREATE -->
-<h2>Create Workflow</h2>
-<input id="wfName" placeholder="Workflow Name">
-<button onclick="createWorkflow()">Create</button>
+<div id="create" class="tab hidden">
+    <h2>Create Workflow</h2>
+    <input id="wfName" placeholder="Workflow Name">
+    <button onclick="createWorkflow()">Create</button>
+</div>
 
-<hr>
+<!-- START -->
+<div id="start" class="tab hidden">
+    <h2>Start Workflow</h2>
 
-<!-- ADD STEP -->
-<h2>Add Step</h2>
-<select id="wfSelect"></select>
-<input id="stepName" placeholder="Step Name">
-<select id="stepType">
-    <option value="approval">Approval</option>
-    <option value="task">Task</option>
-    <option value="notification">Notification</option>
-</select>
-<input id="stepOrder" placeholder="Order">
-<button onclick="addStep()">Add Step</button>
+    <select id="execWorkflow"></select>
+    <input id="amount" placeholder="Amount">
+    <input id="country" placeholder="Country">
 
-<hr>
+    <button onclick="runWorkflow()">Start</button>
 
-<!-- ADD RULE -->
-<h2>Add Rule</h2>
-<input id="ruleStep" placeholder="Step ID">
-<input id="condition" placeholder="Condition (amount > 1000)">
-<input id="nextStep" placeholder="Next Step ID">
-<input id="priority" placeholder="Priority">
-<button onclick="addRule()">Add Rule</button>
+    <!-- DIAGRAM -->
+    <div class="diagram">
+        <div class="node start">Start</div>
+        <div class="arrow">→</div>
+        <div class="node">Manager Approval</div>
+        <div class="arrow">→</div>
+        <div class="node">Condition</div>
+        <div class="arrow">→</div>
+        <div class="node">Finance Approval</div>
+    </div>
 
-<hr>
-
-<!-- EXECUTE -->
-<h2>Start Workflow</h2>
-<select id="execWorkflow"></select>
-<input id="amount" placeholder="Amount">
-<input id="country" placeholder="Country">
-<button onclick="runWorkflow()">Start</button>
+</div>
 
 <script src="/static/script.js"></script>
 

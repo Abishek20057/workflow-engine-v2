@@ -1,51 +1,67 @@
 body {
     font-family: "Times New Roman";
-    background: #0f172a;
-    color: white;
+    background: #f1f5f9;
     padding: 20px;
 }
 
 h1 {
-    color: #38bdf8;
+    color: #1e3a8a;
+}
+
+.tabs button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.tab {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #ccc;
+    padding: 10px;
 }
 
 button {
     background: #22c55e;
     color: white;
     border: none;
-    padding: 8px 15px;
-    margin: 5px;
-    cursor: pointer;
+    padding: 8px;
 }
 
-.result-box {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 10px;
-    animation: fadeIn 1s ease-in;
+/* DIAGRAM */
+.diagram {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.node {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
 }
 
 .start {
-    color: orange;
-    animation: slideIn 0.5s;
+    background: green;
 }
 
-.step {
-    margin-left: 20px;
-    animation: slideIn 0.7s;
-}
-
-.done {
-    color: lightgreen;
-    animation: slideIn 1s;
-}
-
-@keyframes slideIn {
-    from {opacity: 0; transform: translateX(-20px);}
-    to {opacity: 1; transform: translateX(0);}
-}
-
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
+.arrow {
+    margin: 0 10px;
+    font-size: 20px;
 }

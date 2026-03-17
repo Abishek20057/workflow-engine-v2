@@ -5,7 +5,7 @@ def run_engine(workflow_id, amount):
     logs = []
     path = []
 
-    logs.append("🚀 Workflow Started")
+    logs.append("Workflow Started")
 
     workflow_steps = [s for s in steps.values() if s["workflow_id"] == workflow_id]
     workflow_steps = sorted(workflow_steps, key=lambda x: x["order"])
@@ -27,6 +27,6 @@ def run_engine(workflow_id, amount):
                 else:
                     logs.append("Condition FALSE")
 
-    logs.append("✅ Workflow Completed")
+    logs.append("Workflow Completed")
 
     return logs, path
