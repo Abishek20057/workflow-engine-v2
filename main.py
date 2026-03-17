@@ -13,7 +13,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 # HOME
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
